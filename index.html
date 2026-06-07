@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cause List बाट आदेश Generator V11 Clean Actions Dirty Save</title>
+  <title>Cause List बाट आदेश Generator V16 Subject Navigation</title>
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -353,12 +353,23 @@ function applyColorStatus(id,value){
   saveState();
   toast(fp.p.colorStatus?('Color status लागू भयो: '+fp.p.colorStatus):'Color status हटाइयो','ok');
 }
+function previewSubject(g,p){
+  let sub=String(p.subject||'').trim();
+  if(!sub && g && Array.isArray(g.rows) && g.rows[p.rowIndex]){
+    try{sub=String(rowObj(g,g.rows[p.rowIndex]).subject||'').trim();}catch(e){}
+  }
+  if(!sub){
+    try{const parts=extractDocParts(p.content||''); sub=String(parts.issue||'').trim();}catch(e){}
+  }
+  return sub;
+}
 function navItem(g,p){
  const title=safePreviewLabel(p);
+ const subject=previewSubject(g,p);
  const status=(p.saved&&!p.dirty)?'<span class="saved">Saved</span>':'<span class="unsaved">Unsaved</span>';
  const sid=safe(p.id);
  // V4: use action sheet modal instead of hidden dropdown menu. This avoids bottom-item overflow and prevents source-code leakage.
- return `<div class="nav-item ${colorStatusClass(p.colorStatus)} ${state.activePreviewId===p.id?'active-preview':''}" id="nav_${sid}" data-preview-id="${sid}"><div class="nav-row"><div class="nav-main" onclick="scrollToPreview('${sid}')" style="cursor:pointer"><div class="nav-title">${title}</div><div class="nav-sub">क्र.स.+मुद्दा नं. · ${status}${p.colorStatus?' · '+safe(p.colorStatus):''}</div></div><div class="nav-actions"><button class="mini ellipsis-btn" onclick="event.stopPropagation(); openPreviewActionSheet('${sid}')" title="Actions">(...)</button></div></div></div>`;
+ return `<div class="nav-item ${colorStatusClass(p.colorStatus)} ${state.activePreviewId===p.id?'active-preview':''}" id="nav_${sid}" data-preview-id="${sid}"><div class="nav-row"><div class="nav-main" onclick="scrollToPreview('${sid}')" style="cursor:pointer"><div class="nav-title">${title}</div><div class="nav-sub">मुद्दा: ${safe(subject||'—')}</div><div class="nav-sub">क्र.स.+मुद्दा नं. · ${status}${p.colorStatus?' · '+safe(p.colorStatus):''}</div></div><div class="nav-actions"><button class="mini ellipsis-btn" onclick="event.stopPropagation(); openPreviewActionSheet('${sid}')" title="Actions">(...)</button></div></div></div>`;
 }
 
 function openPreviewActionSheet(id){
