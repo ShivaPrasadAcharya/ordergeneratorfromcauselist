@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cause List बाट आदेश Generator V16 Subject Navigation</title>
+  <title>Auto Order Generator</title>
   <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +30,7 @@
     .input-tools,.preview-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.hint{font-size:12px;color:var(--muted);line-height:1.5}.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:12px;color:var(--muted);font-weight:700}.badge.ok{color:var(--ok);border-color:rgba(8,123,90,.25)}.badge.warn{color:var(--brand);border-color:var(--brand2)}
     .workspace{display:grid;grid-template-columns:320px 1fr;gap:14px;align-items:start}.side{position:sticky;top:76px;max-height:calc(100vh - 90px);overflow:auto}.maincol{min-width:0}@media(max-width:1050px){.workspace{grid-template-columns:1fr}.side{position:static;max-height:none}}
     .filter-list{display:grid;gap:8px}.check{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--muted);font-weight:700}.check input{width:auto;margin-top:3px;accent-color:var(--brand)}
-    .nav-list{display:grid;gap:8px}.nav-item{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:9px;transition:background .18s,border-color .18s,box-shadow .18s}.nav-item.status-sahi{background:#e7f7e8}.nav-item.status-faisala{background:#e7f7e8}.nav-item.status-sthagit{background:#555;color:#fff;border-color:#555}.nav-item.status-sthagit .nav-title,.nav-item.status-sthagit .nav-sub,.nav-item.status-sthagit .saved,.nav-item.status-sthagit .unsaved{color:#fff}.nav-item.status-herna-namilne{background:#ffe8e8}.nav-item.status-herna-nabhyaine{background:#000;color:#fff;border-color:#000}.nav-item.status-herna-nabhyaine .nav-title,.nav-item.status-herna-nabhyaine .nav-sub,.nav-item.status-herna-nabhyaine .saved,.nav-item.status-herna-nabhyaine .unsaved{color:#fff}.nav-item.active-preview{border-color:#dc2626!important;box-shadow:0 0 0 3px rgba(220,38,38,.20)!important}.nav-item.active-preview .nav-title,.nav-item.active-preview .nav-sub,.nav-item.active-preview .saved,.nav-item.active-preview .unsaved{color:#dc2626!important}.nav-item.active-preview .mini{border-color:#dc2626;color:#dc2626}.nav-row{display:flex;justify-content:space-between;gap:8px;align-items:start}.nav-title{font-weight:850;color:var(--ink);font-size:13px}.nav-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}.nav-main{min-width:0;flex:1}.nav-actions{position:relative;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}.mini{border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:8px;font-size:11px;font-weight:800;padding:5px 7px}.mini:hover{color:var(--brand);border-color:var(--brand2)}.mini.danger:hover{color:var(--danger);border-color:var(--danger)}.ellipsis-btn{min-width:34px;height:30px;border-radius:10px;font-size:16px;line-height:1;background:var(--paper)}.nav-menu{display:none;position:absolute;right:0;top:34px;z-index:25;min-width:178px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px}.nav-menu.open{display:grid;gap:4px}.nav-menu button{width:100%;justify-content:flex-start;text-align:left}.nav-menu .mini{font-size:12px;padding:7px 9px;background:transparent;border-color:transparent;border-radius:9px}.nav-menu .mini:hover{background:var(--panel);border-color:var(--line)}
+    .nav-list{display:grid;gap:8px}.nav-item{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:9px;transition:background .18s,border-color .18s,box-shadow .18s}.nav-item.status-sahi{background:#e7f7e8}.nav-item.status-faisala{background:#e7f7e8}.nav-item.status-sthagit{background:#555;color:#fff;border-color:#555}.nav-item.status-sthagit .nav-title,.nav-item.status-sthagit .nav-sub,.nav-item.status-sthagit .saved,.nav-item.status-sthagit .unsaved{color:#fff}.nav-item.status-herna-namilne{background:#ffe8e8}.nav-item.status-herna-nabhyaine{background:var(--paper);color:#b42335;border-color:#b42335}.nav-item.status-herna-nabhyaine .nav-title,.nav-item.status-herna-nabhyaine .nav-sub,.nav-item.status-herna-nabhyaine .saved,.nav-item.status-herna-nabhyaine .unsaved{color:#b42335}.nav-item.status-herna-nabhyaine ~ .nav-item .nav-title,.nav-item.status-herna-nabhyaine ~ .nav-item .nav-sub,.nav-item.status-herna-nabhyaine ~ .nav-item .saved,.nav-item.status-herna-nabhyaine ~ .nav-item .unsaved{color:#b42335!important}.nav-item.active-preview{background:#000!important;border-color:#000!important;box-shadow:0 0 0 3px rgba(0,0,0,.20)!important}.nav-item.active-preview .nav-title,.nav-item.active-preview .nav-sub,.nav-item.active-preview .saved,.nav-item.active-preview .unsaved{color:#fff!important}.nav-item.active-preview .mini{border-color:#fff;color:#fff}.nav-row{display:flex;justify-content:space-between;gap:8px;align-items:start}.nav-title{font-weight:850;color:var(--ink);font-size:13px}.nav-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35}.nav-main{min-width:0;flex:1}.nav-actions{position:relative;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}.mini{border:1px solid var(--line);background:var(--paper);color:var(--muted);border-radius:8px;font-size:11px;font-weight:800;padding:5px 7px}.mini:hover{color:var(--brand);border-color:var(--brand2)}.mini.danger:hover{color:var(--danger);border-color:var(--danger)}.ellipsis-btn{min-width:34px;height:30px;border-radius:10px;font-size:16px;line-height:1;background:var(--paper)}.nav-menu{display:none;position:absolute;right:0;top:34px;z-index:25;min-width:178px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px}.nav-menu.open{display:grid;gap:4px}.nav-menu button{width:100%;justify-content:flex-start;text-align:left}.nav-menu .mini{font-size:12px;padding:7px 9px;background:transparent;border-color:transparent;border-radius:9px}.nav-menu .mini:hover{background:var(--panel);border-color:var(--line)}
     .table-wrap{max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:13px} table{width:100%;border-collapse:collapse;font-size:12.5px} th,td{border:1px solid var(--line);padding:8px;vertical-align:top;text-align:left} th{position:sticky;top:0;background:var(--panel2);color:var(--brand);z-index:2}.row-selected td{background:rgba(199,154,77,.14)!important}
     .trash-count{color:var(--danger);border-color:rgba(180,35,53,.23)}.preview-card-active .doc{outline:2px solid rgba(199,154,77,.55);outline-offset:4px}.doc-list{display:grid;gap:16px}.doc{background:#fff;color:#111827;border:1px solid #d5d9e0;border-radius:5px;max-width:820px;margin:auto;padding:46px 56px;box-shadow:0 10px 30px rgba(30,20,5,.18);font-family:Kalimati,'Noto Sans Devanagari',serif;font-size:12pt;line-height:1.72}.doc[contenteditable="true"]{outline:2px dashed transparent}.doc[contenteditable="true"]:focus{outline-color:#c79a4d;background:#fffdf8}.doc[data-editmode="false"]{user-select:text}.doc[data-editmode="false"] .center,.doc[data-editmode="false"] .title,.doc[data-editmode="false"] .case-line,.doc[data-editmode="false"] .party-line,.doc[data-editmode="false"] .issue-line,.doc[data-editmode="false"] .sig,.doc[data-editmode="false"] .iti-line{user-select:text}.doc[data-editmode="false"] .body{cursor:text}.docbar{max-width:820px;margin:0 auto -8px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.docbar-left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.doc-actions{display:flex;gap:6px;flex-wrap:wrap}.doc .center{text-align:center}.doc .title{font-size:12pt;font-weight:800;text-align:center;margin:7px 0 10px}.doc .party-line{display:flex;align-items:flex-end;gap:8px;margin:4px 0}.doc .party-name{white-space:pre-wrap}.doc .dots{flex:1;border-bottom:1px dotted #555;min-width:80px;transform:translateY(-4px)}.doc .party-role{white-space:nowrap}.doc .under{text-decoration:underline;font-weight:800}.doc .case-line,.doc .issue-line{text-align:center;font-weight:800;margin:8px 0}.doc .body{text-align:justify;white-space:pre-wrap;margin-top:18px;min-height:80px;border:1px dashed #c9b37f;border-radius:8px;padding:8px 10px;background:#fffdf7}.doc .body:focus{outline:2px solid rgba(199,154,77,.35)}.doc .sig{text-align:right;margin-top:32px}.doc .iti-line{display:flex;align-items:flex-end;gap:8px;margin-top:22px;white-space:nowrap}.doc .iti-text{flex:0 0 auto}.doc .tab-leader{flex:1;border-bottom:1px dotted #555;min-width:80px;transform:translateY(-4px)}.unsaved{color:var(--danger);font-weight:800}.saved{color:var(--ok);font-weight:800}
     .history-group{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:12px;overflow:hidden}.history-head{padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);background:var(--panel2)}.history-items{display:grid;gap:8px;padding:12px}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:13px;background:var(--panel)}
@@ -53,10 +53,11 @@
 <body data-theme="light">
   <div class="top">
     <div class="top-inner">
-      <div class="brand"><div class="logo">⚖</div><div><h1>Cause List बाट आदेश Generator</h1><small>InputTable → Preview → History → DOCX · v7 AutoClose + ActiveNav</small></div></div>
+      <div class="brand"><div class="logo">⚖</div><div><h1>Cause List बाट आदेश Generator</h1><medium><b>Inspirer:</b>मा.जि.न्या श्री अन्जनराज सापकोटा; <b>Developer:</b> श्री शिवप्रसाद आचार्य</medium></div></div>
       <div class="tabs" id="tabs"></div>
       <div class="top-actions">
         <button class="btn icon" id="themeBtn" title="Light/Dark" onclick="toggleTheme()">☀️</button>
+        <span id="dateDisplay" style="padding:9px 12px;font-weight:700;color:var(--brand);font-size:13px;">-</span>
         <button class="btn info" onclick="showSettings()">⚙️ Settings</button>
       </div>
     </div>
@@ -101,13 +102,6 @@ function partyOptionsHtml(selected='वादी|प्रतिवादी'){
   return PARTY_PAIRS.map(pair=>{const key=pairKey(pair[0],pair[1]);return `<option value="${safe(key)}" ${key===selected?'selected':''}>${safe(pair[0])}, ${safe(pair[1])}</option>`}).join('');
 }
 
-let state={activeType:'input',activeIndex:0,groups:[],trash:[],previewStates:{},settings:{court:'काठमाडौं जिल्ला अदालत',bench:'इजलास',judge:'माननीय जिल्ला न्यायाधीश श्री शिवप्रसाद आचार्य',signature:'जिल्ला न्यायाधीश',date:todayNepaliLike(),body:'[text area]',fontSize:12},filters:{tableNumbering:true,all:false,nonEmpty:true,selected:false,saved:false,unsaved:false}};
-
-function uid(){return 'id_'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function todayNepaliLike(){
-  // Default date is today's B.S. date. The current app context date is 2026-06-07 = 2083-02-24.
-  return adToBsLocal(new Date()) || '२०८३-०२-२४';
-}
 const bsMonths=['','बैशाख','जेठ','असार','श्रावण','भाद्र','आश्विन','कार्तिक','मंसिर','पुष','माघ','फागुन','चैत'];
 const BS_MONTH_LENGTHS={
   2081:[31,32,31,32,31,30,30,30,29,30,29,31],
@@ -115,7 +109,55 @@ const BS_MONTH_LENGTHS={
   2083:[31,31,32,31,31,30,30,30,29,30,29,31],
   2084:[31,31,32,31,31,30,30,30,29,30,29,31]
 };
+
+let state={activeType:'input',activeIndex:0,groups:[],trash:[],previewStates:{},settings:{court:'काठमाडौं जिल्ला अदालत',bench:'इजलास',judge:'माननीय जिल्ला न्यायाधीश श्री शिवप्रसाद आचार्य',signature:'जिल्ला न्यायाधीश',date:todayNepaliLike(),body:'[text area]',fontSize:12},filters:{tableNumbering:true,all:false,nonEmpty:true,selected:false,saved:false,unsaved:false}};
+
+function uid(){return 'id_'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
 function pad2(n){return String(n).padStart(2,'0')}
+function todayAdString(){const d=new Date();return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`}
+function todayNepaliLike(){
+  // Default date is today's B.S. date converted from today's AD date.
+  return adToBsLocal(new Date()) || '२०८३-०२-२४';
+}
+function bsToAdLocal(bsInput){
+  const parsed=parseYmd(toEng(String(bsInput||'')));
+  if(!parsed) return '';
+  const anchorAd=new Date(2026,5,7); // 2026-06-07
+  let bs={y:parsed.y,m:parsed.m,d:parsed.d};
+  const target={y:parsed.y,m:parsed.m,d:parsed.d};
+  let current={y:2083,m:2,d:24};
+  function ml(y,m){return (BS_MONTH_LENGTHS[y]&&BS_MONTH_LENGTHS[y][m-1])||30}
+  let diff=0;
+  while(current.y!==target.y||current.m!==target.m||current.d!==target.d){
+    if(current.y<target.y||current.y===target.y&&current.m<target.m||current.y===target.y&&current.m===target.m&&current.d<target.d){
+      current.d++;
+      if(current.d>ml(current.y,current.m)){current.d=1;current.m++;if(current.m>12){current.m=1;current.y++;}}
+      diff++;
+    } else {
+      current.d--;
+      if(current.d<1){current.m--;if(current.m<1){current.m=12;current.y--;}current.d=ml(current.y,current.m);}
+      diff--;
+    }
+  }
+  const ad=new Date(anchorAd);
+  ad.setDate(ad.getDate()+diff);
+  return `${ad.getFullYear()}-${pad2(ad.getMonth()+1)}-${pad2(ad.getDate())}`;
+}
+function parseSettingsDateInput(raw){
+  const input=String(raw||'').trim();
+  if(!input) return {ad:todayAdString(),bs:todayNepaliLike()};
+  const parts=input.split('/').map(x=>x.trim()).filter(Boolean);
+  let ad='', bs='';
+  if(parts.length===1){
+    if(isLikelyAdDate(parts[0])){ad=parts[0];bs=adToBsLocal(parts[0])||'';} else {bs=parts[0];ad=bsToAdLocal(parts[0])||todayAdString();}
+  } else {
+    const [first,second]=parts;
+    if(isLikelyAdDate(first)){ad=first;bs=adToBsLocal(first)||second||'';} else if(isLikelyAdDate(second)){ad=second;bs=adToBsLocal(second)||first||'';} else {bs=first;ad=bsToAdLocal(first)||todayAdString();}
+  }
+  if(!bs && ad) bs=adToBsLocal(ad)||todayNepaliLike();
+  if(!ad && bs) ad=bsToAdLocal(bs)||todayAdString();
+  return {ad,bs};
+}
 function parseYmd(s=''){
   const m=toEng(String(s||'')).trim().match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
   return m?{y:+m[1],m:+m[2],d:+m[3]}:null;
@@ -163,13 +205,19 @@ function formatItiDate(input=''){
   const p=parseYmd(s);
   if(!p) return `इति संवत् ${toNep(s)} शुभम्`;
   const monthName=bsMonths[p.m]||toNep(p.m);
-  // रोज: Sunday = १, Monday = २ ... Saturday = ७. If AD date cannot be inferred, use today's day.
-  let roj=new Date().getDay()+1;
-  if(isLikelyAdDate(raw)){const adp=parseYmd(raw); roj=new Date(adp.y,adp.m-1,adp.d).getDay()+1;}
-  else{
-    // If this is today's default BS date, match today's roj.
-    const todayBs=parseYmd(todayNepaliLike());
-    if(!(todayBs && todayBs.y===p.y && todayBs.m===p.m && todayBs.d===p.d)) roj=new Date().getDay()+1;
+  // रोज: Sunday = १, Monday = २ ... Saturday = ७.
+  let roj;
+  if(isLikelyAdDate(raw)){
+    const adp=parseYmd(raw);
+    roj=new Date(adp.y,adp.m-1,adp.d).getDay()+1;
+  } else {
+    const adDate=bsToAdLocal(s);
+    if(adDate){
+      const adp=parseYmd(adDate);
+      roj=new Date(adp.y,adp.m-1,adp.d).getDay()+1;
+    } else {
+      roj=new Date().getDay()+1;
+    }
   }
   return `इति संवत् ${toNep(p.y)} साल ${monthName} महिना ${toNep(p.d)} गते रोज ${toNep(roj)} शुभम्`;
 }
@@ -191,13 +239,14 @@ function loadState(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||'nu
 function ensureOne(){if(!Array.isArray(state.trash))state.trash=[];state.trash=state.trash.slice(0,24);if(!state.previewStates||typeof state.previewStates!=='object')state.previewStates={};if(!state.filters)state.filters={};if(state.filters.tableNumbering===undefined)state.filters.tableNumbering=true;state.groups.forEach(g=>{if(!Array.isArray(g.history))g.history=[];if(!Array.isArray(g.previews))g.previews=[];});if(!state.groups.length) state.groups.push(newGroup(1));}
 function newGroup(no){return {no,input:'',mode:'auto',rows:[],headers:[],selectedText:'',previews:[],history:[]}}
 
-function render(){ensureOne();renderTabs();const app=document.getElementById('app');const g=state.groups[state.activeIndex];if(state.activeType==='input') app.innerHTML=inputView(g); if(state.activeType==='preview') app.innerHTML=previewView(g); if(state.activeType==='history') app.innerHTML=historyView(g);bindAfterRender();if(state.activeType==='preview'){setTimeout(()=>{restorePreviewState(g.no);updateActivePreviewFromViewport();},80);}saveState();}
+function render(){ensureOne();renderTabs();updateDateDisplay();const app=document.getElementById('app');const g=state.groups[state.activeIndex];if(state.activeType==='input') app.innerHTML=inputView(g); if(state.activeType==='preview') app.innerHTML=previewView(g); if(state.activeType==='history') app.innerHTML=historyView(g);bindAfterRender();if(state.activeType==='preview'){setTimeout(()=>{restorePreviewState(g.no);updateActivePreviewFromViewport();},80);}saveState();}
+function updateDateDisplay(){const dd=document.getElementById('dateDisplay');if(dd){const bs=state.settings.date||todayNepaliLike();dd.textContent=toNep(bs);}}
 function renderTabs(){const tabs=document.getElementById('tabs');tabs.innerHTML=state.groups.map((g,i)=>`<button class="tab ${state.activeIndex===i&&state.activeType==='input'?'active':''}" onclick="openTab(${i},'input')">InputTable${g.no}</button><button class="tab ${state.activeIndex===i&&state.activeType==='preview'?'active':''}" onclick="openTab(${i},'preview')">Preview${g.no} <span class="badge">${g.previews.length}</span></button><button class="tab ${state.activeIndex===i&&state.activeType==='history'?'active':''}" onclick="openTab(${i},'history')">History${g.no} <span class="badge">${g.history.length}</span></button>`).join('')+`<button class="tab add" onclick="addTableGroup()">＋ Add Table</button>`}
 function saveCurrentPreviewState(){if(state.activeType!=='preview')return;const g=state.groups[state.activeIndex];if(!g)return;if(!state.previewStates)state.previewStates={};state.previewStates[g.no]={scrollY:window.scrollY||document.documentElement.scrollTop||0,activePreviewId:state.activePreviewId||'',tableFocus:state.tableFocus||null};}
 function restorePreviewState(groupNo){const ps=(state.previewStates||{})[groupNo];if(!ps)return;if(ps.activePreviewId){state.activePreviewId=ps.activePreviewId;setActivePreview(ps.activePreviewId,{noScroll:true,noSave:true});}
   if(typeof ps.scrollY==='number')setTimeout(()=>window.scrollTo({top:ps.scrollY,behavior:'auto'}),20);}
 function openTab(i,type){saveCurrentPreviewState();state.activeIndex=i;state.activeType=type;render()}
-function addTableGroup(){state.groups.push(newGroup(state.groups.length+1));state.activeIndex=state.groups.length-1;state.activeType='input';render();toast(`InputTable${state.groups.length} थपियो`,'ok')}
+function addTableGroup(){state.groups.push(newGroup(state.groups.length+1));state.activeIndex=state.groups.length-1;state.activeType='input';state.settings.date=todayNepaliLike();render();toast(`InputTable${state.groups.length} थपियो`,'ok')}
 function removeTableGroup(no){
   const idx=state.groups.findIndex(g=>g.no===no);
   if(idx<0)return;
@@ -231,7 +280,7 @@ function usePreviousInput(no){const idx=state.groups.findIndex(g=>g.no===no);for
 function loadSampleData(no){const g=getGroup(no);if(!g)return;g.input=SAMPLE_CAUSELIST_HTML;g.mode='html';state.activeIndex=state.groups.findIndex(x=>x.no===no);state.activeType='input';render();toast('Sample cause list load भयो। Preview auto populate हुँदैछ।','ok');setTimeout(()=>generatePreview(no),80)}
 function getGroup(no){return state.groups.find(g=>g.no===no)}
 
-function generatePreview(no){const g=getGroup(no);g.input=document.getElementById('inputText')?.value||g.input;g.mode=document.getElementById('mode')?.value||g.mode;g.selectedText=document.getElementById('selectedText')?.value||g.selectedText;const parsed=parseInput(g.input,g.mode);g.headers=parsed.headers;g.rows=parsed.rows;if(!g.rows.length){render();toast('Cause list rows भेटिएन। Input format जाँच गर्नुहोस्।','danger');return}const chosen=eligibleRows(g);g.previews=chosen.map((row,idx)=>makePreview(g,row,idx));state.activeType='preview';render();toast(`Preview${g.no}: ${g.previews.length} आदेश तयार भयो`,'ok')}
+function generatePreview(no){const g=getGroup(no);g.input=document.getElementById('inputText')?.value||g.input;g.mode=document.getElementById('mode')?.value||g.mode;g.selectedText=document.getElementById('selectedText')?.value||g.selectedText;const parsed=parseInput(g.input,g.mode);g.headers=parsed.headers;g.rows=parsed.rows;if(!g.rows.length){render();toast('Cause list rows भेटिएन। Input format जाँच गर्नुहोस्।','danger');return}const isReentry=g.previews.length>0;const prevDate=state.settings.date;state.settings.date=todayNepaliLike();const chosen=eligibleRows(g);g.previews=chosen.map((row,idx)=>makePreview(g,row,idx));state.activeType='preview';render();if(isReentry){confirmBox('Date change गर्ने?','Input table पुनः generate भएको छ। Date आजको default date मा reset भएको छ। Settings मा जाएर date change गर्न चाहनुहुन्छ?',()=>{showSettings()});}else{toast(`Preview${g.no}: ${g.previews.length} आदेश तयार भयो`,'ok');}}
 function parseInput(raw,mode='auto'){raw=String(raw||'').trim();if(!raw)return {headers:[],rows:[]};if(mode==='auto'){if(/^\s*\[/.test(raw))mode='json';else if(/<table[\s\S]*?>/i.test(raw))mode='html';else mode='text'}try{if(mode==='json')return parseJson(raw);if(mode==='html')return parseHtml(raw);return parseText(raw)}catch(e){console.error(e);return {headers:[],rows:[]}}}
 function parseJson(raw){const arr=JSON.parse(raw);if(!Array.isArray(arr))return {headers:[],rows:[]};if(arr.length&&typeof arr[0]==='object'&&!Array.isArray(arr[0])){const headers=[...new Set(arr.flatMap(o=>Object.keys(o)))];return {headers,rows:arr.map(o=>headers.map(h=>o[h]??''))}}return parseMatrix(arr)}
 function parseHtml(raw){
@@ -455,7 +504,7 @@ function guardPreviewEdit(ev,id){
     const now=Date.now();
     if(now-__editGuardLast>1400){
       __editGuardLast=now;
-      toast('Auto-generated भाग edit गर्न मिल्दैन। Body text मात्र edit गर्न मिल्छ। Full edit का लागि (...) → Edit selection प्रयोग गर्नुहोस्।','danger');
+      toast('Full edit का लागि (...) → Edit selection प्रयोग गर्नुहोस्।','danger');
     }
   }
 }
@@ -548,7 +597,7 @@ function savePreview(id){
 function commitSave(g,p){
   if(!p.dirty){
     if(p.saved)return toast('यो preview पहिले नै saved छ; नयाँ change छैन।','ok');
-    return toast('Change नगरी auto-generated preview लाई saved बनाइँदैन। Body text edit गरेपछि मात्र Save गर्नुहोस्।','danger');
+    return toast('NOT SAVED as there are NO CHANGES ','danger');
   }
   if(p.beforeChangeContent){
     pushTrash({...p,content:p.beforeChangeContent},p.saved?'Previous saved version before new save':'Previous unsaved version before save');
@@ -599,8 +648,8 @@ function loadHistory(no,id){const g=getGroup(no);const h=g.history.find(x=>x.id=
 function deleteHistory(no,id){confirmBox('History delete गर्ने?','यो saved item history बाट हट्छ।',()=>{const g=getGroup(no);g.history=g.history.filter(x=>x.id!==id);const p=g.previews.find(x=>x.id===id);if(p){p.saved=false;p.saveId=''}render();toast('History item delete भयो','ok')})}
 function clearHistory(no){confirmBox('पूरै History खाली गर्ने?','यो कार्य फर्काउन सकिँदैन।',()=>{const g=getGroup(no);g.history=[];g.previews.forEach(p=>{p.saved=false;p.saveId=''}) ;render();toast('History खाली भयो','ok')})}
 
-function showSettings(){const s=state.settings;modal.innerHTML=`<div class="modal-card"><div class="modal-title">⚙️ Global Settings</div><div class="grid-3"><div><label>अदालत</label><input id="setCourt" value="${safe(s.court)}"></div><div><label>इजलास</label><input id="setBench" value="${safe(s.bench)}"></div><div><label>न्यायाधीश</label><input id="setJudge" value="${safe(s.judge)}"></div><div><label>Signature</label><input id="setSig" value="${safe(s.signature)}"></div><div><label>Date (BS default / AD auto convert)</label><input id="setDate" value="${safe(s.date)}" placeholder="२०८३-०२-२४ वा 2026-06-07"></div><div><label>Font size</label><input id="setFont" type="number" value="${safe(s.fontSize)}"></div></div><br><label>Default order body text</label><textarea id="setBody">${safe(s.body)}</textarea><div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="applySettings()">Save Settings</button></div></div>`;modal.classList.remove('hidden')}
-async function applySettings(){let chosenDate=setDate.value||todayNepaliLike();if(isLikelyAdDate(chosenDate)){toast('English date लाई BS मा convert गर्दै...','ok');chosenDate=await adToBsViaApi(chosenDate)||adToBsLocal(chosenDate)||chosenDate;}state.settings={court:setCourt.value,bench:setBench.value,judge:setJudge.value,signature:setSig.value,date:chosenDate,body:setBody.value,fontSize:Number(setFont.value)||12};closeModal();render();toast('Settings save भयो','ok')}
+function showSettings(){const s=state.settings;const datePair=parseSettingsDateInput(s.date||todayNepaliLike());modal.innerHTML=`<div class="modal-card"><div class="modal-title">⚙️ Global Settings</div><div class="grid-3"><div><label>अदालत</label><input id="setCourt" value="${safe(s.court)}"></div><div><label>इजलास</label><input id="setBench" value="${safe(s.bench)}"></div><div><label>न्यायाधीश</label><input id="setJudge" value="${safe(s.judge)}"></div><div><label>Signature</label><input id="setSig" value="${safe(s.signature)}"></div><div><label>Date (AD / BS)</label><input id="setDate" value="${safe(`${datePair.ad} / ${datePair.bs}`)}" placeholder="2026-06-08 / 2083-02-24"></div><div><label>Font size</label><input id="setFont" type="number" value="${safe(s.fontSize)}"></div></div><br><label>Default order body text</label><textarea id="setBody">${safe(s.body)}</textarea><div class="modal-actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="applySettings()">Save Settings</button></div></div>`;modal.classList.remove('hidden')}
+async function applySettings(){const parsed=parseSettingsDateInput(setDate.value);let chosenDate=parsed.bs||todayNepaliLike();if(isLikelyAdDate(parsed.ad) && !parsed.bs){toast('English date लाई BS मा convert गर्दै...','ok');chosenDate=adToBsLocal(parsed.ad)||await adToBsViaApi(parsed.ad)||chosenDate;}state.settings={court:setCourt.value,bench:setBench.value,judge:setJudge.value,signature:setSig.value,date:chosenDate,body:setBody.value,fontSize:Number(setFont.value)||12};closeModal();render();toast('Settings save भयो','ok')}
 function toggleTheme(){const b=document.body;const dark=b.getAttribute('data-theme')==='dark';b.setAttribute('data-theme',dark?'light':'dark');themeBtn.textContent=dark?'☀️':'🌙'}
 
 function closeModal(){modal.classList.add('hidden');modal.innerHTML=''}
