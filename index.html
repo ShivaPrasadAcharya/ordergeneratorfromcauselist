@@ -239,7 +239,7 @@ function loadState(){try{const s=JSON.parse(localStorage.getItem(STORE_KEY)||'nu
 function ensureOne(){if(!Array.isArray(state.trash))state.trash=[];state.trash=state.trash.slice(0,24);if(!state.previewStates||typeof state.previewStates!=='object')state.previewStates={};if(!state.filters)state.filters={};if(state.filters.tableNumbering===undefined)state.filters.tableNumbering=true;state.groups.forEach(g=>{if(!Array.isArray(g.history))g.history=[];if(!Array.isArray(g.previews))g.previews=[];});if(!state.groups.length) state.groups.push(newGroup(1));}
 function newGroup(no){return {no,input:'',mode:'auto',rows:[],headers:[],selectedText:'',previews:[],history:[]}}
 
-function render(){ensureOne();renderTabs();updateDateDisplay();const app=document.getElementById('app');const g=state.groups[state.activeIndex];if(state.activeType==='input') app.innerHTML=inputView(g); if(state.activeType==='preview') app.innerHTML=previewView(g); if(state.activeType==='history') app.innerHTML=historyView(g);bindAfterRender();if(state.activeType==='preview'){setTimeout(()=>{restorePreviewState(g.no);updateActivePreviewFromViewport();},80);}saveState();}
+function render(){ensureOne();renderTabs();updateDateDisplay();const app=document.getElementById('app');const g=state.groups[state.activeIndex];if(state.activeType==='input') app.innerHTML=inputView(g); if(state.activeType==='preview') app.innerHTML=previewView(g); if(state.activeType==='history') app.innerHTML=historyView(g);bindAfterRender();if(state.activeType==='preview'){setTimeout(()=>{restorePreviewState(g.no);},80);}saveState();}
 function updateDateDisplay(){const dd=document.getElementById('dateDisplay');if(dd){const bs=state.settings.date||todayNepaliLike();dd.textContent=toNep(bs);}}
 function renderTabs(){const tabs=document.getElementById('tabs');tabs.innerHTML=state.groups.map((g,i)=>`<button class="tab ${state.activeIndex===i&&state.activeType==='input'?'active':''}" onclick="openTab(${i},'input')">InputTable${g.no}</button><button class="tab ${state.activeIndex===i&&state.activeType==='preview'?'active':''}" onclick="openTab(${i},'preview')">Preview${g.no} <span class="badge">${g.previews.length}</span></button><button class="tab ${state.activeIndex===i&&state.activeType==='history'?'active':''}" onclick="openTab(${i},'history')">History${g.no} <span class="badge">${g.history.length}</span></button>`).join('')+`<button class="tab add" onclick="addTableGroup()">＋ Add Table</button>`}
 function saveCurrentPreviewState(){if(state.activeType!=='preview')return;const g=state.groups[state.activeIndex];if(!g)return;if(!state.previewStates)state.previewStates={};state.previewStates[g.no]={scrollY:window.scrollY||document.documentElement.scrollTop||0,activePreviewId:state.activePreviewId||'',tableFocus:state.tableFocus||null};}
@@ -492,6 +492,7 @@ function saveActivePreview(){
   if(!id)return toast('Active preview भेटिएन। पहिले कुनै preview card/body मा cursor राख्नुहोस्।','danger');
   const fp=findPreview(id);
   if(!fp)return toast('Active preview भेटिएन।','danger');
+  saveCurrentPreviewState();
   savePreview(id);
 }
 let __editGuardLast=0;
@@ -521,8 +522,14 @@ function setActivePreview(id,opts={}){
   if(wrap)wrap.classList.add('preview-card-active');
   saveState();
 }
+function isPreviewCursorActive(){
+  const active=document.activeElement;
+  if(!active || active===document.body || active===document.documentElement) return false;
+  return !!active.closest('[id^="doc_"]');
+}
 function updateActivePreviewFromViewport(){
   if(state.activeType!=='preview')return;
+  if(!isPreviewCursorActive())return;
   if(typeof modal!=='undefined' && !modal.classList.contains('hidden'))return;
   const wraps=[...document.querySelectorAll('[id^="wrap_id_"]')];
   if(!wraps.length)return;
@@ -743,7 +750,7 @@ document.addEventListener('click',e=>{
   if(e.target&&e.target.id==='modal')closeModal();
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.classList.contains('hidden'))closeModal();});
-window.addEventListener('scroll',()=>{window.clearTimeout(window.__previewActiveTimer);window.__previewActiveTimer=setTimeout(updateActivePreviewFromViewport,80);},{passive:true});
+window.addEventListener('scroll',()=>{window.clearTimeout(window.__previewActiveTimer);window.__previewActiveTimer=setTimeout(()=>{if(isPreviewCursorActive())updateActivePreviewFromViewport();},80);},{passive:true});
 loadState();render();
 </script>
 </body>
