@@ -58,12 +58,8 @@
     <div class="top-inner">
       <div class="brand"><div class="logo">⚖</div><div><h1>Cause List बाट आदेश Generator</h1><medium><b>Inspirer:</b>मा.जि.न्या श्री अन्जनराज सापकोटा;<br> <b>Developer:</b> श्री शिवप्रसाद आचार्य</medium></div></div>
       <div class="tabs" id="tabs"></div>
-      <div class="tools-wrapper">
-        <button class="btn" id="toolsBtn" onclick="toggleToolsMenu()" aria-haspopup="true" aria-expanded="false">Tools ▾</button>
-        <div class="tools-menu hidden" id="toolsMenu"></div>
-      </div>
+      <div id="topControls" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"></div>
       <div class="top-actions">
-        <button class="btn icon" id="themeBtn" title="Light/Dark" onclick="toggleTheme()">☀️</button>
         <span id="dateDisplay" style="padding:9px 12px;font-weight:700;color:var(--brand);font-size:13px;">-</span>
         <button class="btn info" onclick="showSettings()">⚙️ Settings</button>
       </div>
@@ -75,6 +71,8 @@
   <div id="printArea" aria-hidden="true"></div>
 
 <script>
+/* eslint-disable no-unused-vars, no-undef, no-redeclare */
+/* @ts-nocheck */
 const STORE_KEY='fresh_court_order_generator_v6_date_format_bs_default';
 const ALL_SOURCE_BLOCKS='__ALL_SOURCE_BLOCKS__';
 const nepMap={'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
@@ -126,6 +124,163 @@ const DEFAULT_JUDGE='माननीय न्यायाधीश';
 const DEFAULT_SIGNATURE='न्यायाधीश';
 const LEGACY_DEFAULT_JUDGES=[DEFAULT_JUDGE,'माननीय जिल्ला न्यायाधीश','न्यायाधीश'];
 const LEGACY_DEFAULT_SIGNATURES=[DEFAULT_SIGNATURE];
+const ORDER_VARIETIES=[
+  {name:'रोक्का (Fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
+  {name:'रोक्का (Successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''},
+  {name:'नाबालिक भेट आदेश',filename:'nabalik_bhet_adesh.docx',keywords:'नाबालिक भेट आदेश, word, docx',content:''},
+  {name:'तायदाती फाँटवारी',filename:'tayadati.json',keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी',content:''}
+];
+
+function xmlEsc(s=''){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function wrapTextWithStyle(text,opt={}){
+  if(!text) return '';
+  let result = text;
+  if(opt.bold) result = `<strong>${result}</strong>`;
+  if(opt.italic) result = `<em>${result}</em>`;
+  if(opt.underline) result = `<u>${result}</u>`;
+  if(opt.color) result = `<span style="color:#${opt.color}">${result}</span>`;
+  return result;
+}
+function docxRunToHtml(run,ns){
+  let text='';
+  const rPr = run.getElementsByTagNameNS(ns,'rPr')[0];
+  const style = {};
+  if(rPr){
+    if(rPr.getElementsByTagNameNS(ns,'b').length || rPr.getElementsByTagNameNS(ns,'bCs').length) style.bold=true;
+    if(rPr.getElementsByTagNameNS(ns,'i').length || rPr.getElementsByTagNameNS(ns,'iCs').length) style.italic=true;
+    if(rPr.getElementsByTagNameNS(ns,'u').length) style.underline=true;
+    const colorEl = rPr.getElementsByTagNameNS(ns,'color')[0];
+    if(colorEl && colorEl.getAttribute('w:val')) style.color = colorEl.getAttribute('w:val');
+  }
+  for(const child of Array.from(run.childNodes)){
+    if(child.nodeType!==1) continue;
+    if(child.localName==='t'){
+      const txt = child.textContent || '';
+      text += xmlEsc(txt);
+    } else if(child.localName==='br'){
+      text += '<br/>';
+    } else if(child.localName==='tab'){
+      text += '&emsp;';
+    }
+  }
+  return wrapTextWithStyle(text,style);
+}
+function docxParagraphToHtml(paragraph,ns){
+  const pieces=[];
+  for(const child of Array.from(paragraph.childNodes)){
+    if(child.nodeType!==1) continue;
+    if(child.localName==='r'){
+      pieces.push(docxRunToHtml(child,ns));
+    } else if(child.localName==='br'){
+      pieces.push('<br/>');
+    } else if(child.localName==='tab'){
+      pieces.push('&emsp;');
+    }
+  }
+  return `<div>${pieces.join('') || ''}</div>`;
+}
+function docxCellToHtml(cell,ns){
+  const paras = Array.from(cell.getElementsByTagNameNS(ns,'p'));
+  return paras.map(p=>docxParagraphToHtml(p,ns)).join('');
+}
+function docxTableToHtml(table,ns){
+  const rows = Array.from(table.getElementsByTagNameNS(ns,'tr'));
+  return `<table>${rows.map(row=>'<tr>'+Array.from(row.getElementsByTagNameNS(ns,'tc')).map(cell=>`<td>${docxCellToHtml(cell,ns)}</td>`).join('')+'</tr>').join('')}</table>`;
+}
+function docxDocumentXmlToHtml(xml){
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xml,'application/xml');
+  const ns='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const body = xmlDoc.getElementsByTagNameNS(ns,'body')[0];
+  if(!body) return '';
+  const parts=[];
+  for(const node of Array.from(body.childNodes)){
+    if(node.nodeType!==1) continue;
+    if(node.localName==='p') parts.push(docxParagraphToHtml(node,ns));
+    else if(node.localName==='tbl') parts.push(docxTableToHtml(node,ns));
+  }
+  return parts.join('');
+}
+function docBinaryToHtml(buf){
+  const dec1252 = new TextDecoder('windows-1252');
+  const decUtf16 = new TextDecoder('utf-16le');
+  const text1252 = dec1252.decode(buf);
+  const textUtf16 = decUtf16.decode(buf);
+  const score = txt=>((txt.match(/[\w\u0900-\u097F]/g)||[]).length);
+  const chosen = score(textUtf16) > score(text1252) ? textUtf16 : text1252;
+  const lines = String(chosen||'').split(/\r\n|\r|\n/).map(l=>l.trim()).filter(Boolean);
+  return lines.map(line=>xmlEsc(line)).join('<br/>');
+}
+async function loadOrderVarieties(){
+  const basePaths=['ordervarieties/','./ordervarieties/'];
+  await Promise.all(ORDER_VARIETIES.map(async (o)=>{
+    if(!o || !o.filename) return;
+    const ext = String(o.filename||'').trim().toLowerCase().split('.').pop();
+    let text='';
+    let buffer=null;
+    for(const p of basePaths){
+      try{
+        const url = p + o.filename;
+        const res = await fetch(url);
+        if(!res.ok) continue;
+        if(ext==='docx' || ext==='doc'){
+          buffer = await res.arrayBuffer();
+          break;
+        }
+        text = await res.text();
+        break;
+      }catch(e){/* try next path */}
+    }
+    if(ext==='docx' && buffer){
+      try{
+        const zip = await JSZip.loadAsync(buffer);
+        const xml = await zip.file('word/document.xml').async('text');
+        const html = docxDocumentXmlToHtml(xml);
+        o.contentHtml = html || '';
+        o.content = html ? '' : xml.replace(/<[^>]+>/g,'').trim();
+      }catch(e){
+        console.warn('DOCX parse failed for', o.filename, e);
+        o.content = (text && String(text)) || (o.content||'');
+        o.contentHtml = '';
+      }
+    } else if(ext==='doc' && buffer){
+      try{
+        const html = docBinaryToHtml(buffer);
+        o.contentHtml = html || '';
+        o.content = '';
+      }catch(e){
+        console.warn('DOC parse failed for', o.filename, e);
+        o.content = (text && String(text)) || (o.content||'');
+        o.contentHtml = '';
+      }
+    } else if(ext==='json' && text){
+      try{
+        const parsed = JSON.parse(text);
+        let extracted = '';
+        if(parsed){
+          if(typeof parsed.order === 'string') extracted = parsed.order;
+          else if(typeof parsed.content === 'string') extracted = parsed.content;
+          else if(typeof parsed.text === 'string') extracted = parsed.text;
+          else if(typeof parsed === 'string') extracted = parsed;
+          else if(typeof parsed === 'object'){
+            for(const k of Object.keys(parsed)){
+              if(typeof parsed[k] === 'string'){ extracted = parsed[k]; break; }
+            }
+          }
+        }
+        if(extracted && !extracted.startsWith('\n')) extracted = '\n' + extracted;
+        o.content = extracted || (o.content||'');
+        o.contentHtml = '';
+      }catch(e){
+        o.content = (text && String(text)) || (o.content||'');
+        o.contentHtml = '';
+      }
+    } else {
+      o.content = (text && String(text)) || (o.content||'');
+      o.contentHtml = '';
+    }
+  }));
+}
 let state={activeType:'input',activeIndex:0,groups:[],trash:[],previewStates:{},settings:{court:'काठमाडौं जिल्ला अदालत',bench:'इजलास',judge:DEFAULT_JUDGE,signature:DEFAULT_SIGNATURE,date:todayNepaliLike(),body:'[text area]',fontSize:12,lineSpacing:1.15},filters:{tableNumbering:true,all:true,nonEmpty:false,selected:false,saved:false,unsaved:false}};
 
 function uid(){return 'id_'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
@@ -224,9 +379,58 @@ function ensureGroupSettings(g){if(!g.settings)g.settings={...state.settings,ben
 function activeSettings(){const g=state.groups[state.activeIndex];return (g&&g.settings)?g.settings:state.settings;}
 function newGroup(no){return {no,input:'',mode:'auto',rows:[],headers:[],selectedText:'',previews:[],history:[],sourceBlocks:[],selectedSourceBlock:'',inputCourtManual:false,inputDateManual:false,settings:{...state.settings,bench:'इजलास'}}}
 
-function render(){ensureOne();renderTabs();updateDateDisplay();const app=document.getElementById('app');const g=state.groups[state.activeIndex];if(state.activeType==='input') app.innerHTML=inputView(g); if(state.activeType==='preview') app.innerHTML=previewView(g); if(state.activeType==='history') app.innerHTML=historyView(g); if(state.activeType==='parsed') app.innerHTML=parsedView(g);bindAfterRender();if(state.activeType==='preview'){setTimeout(()=>{restorePreviewState(g.no);},80);}saveState();}
+function renderTopControls(){
+  try{
+    const top=document.getElementById('topControls'); if(!top) return;
+    const g=state.groups[state.activeIndex]||newGroup(1);
+    
+    // Clear and rebuild
+    top.innerHTML = '';
+    
+    // Order select
+    const orderOpts = ORDER_VARIETIES.map(o=>`<option value="${safe(o.name)}" title="${safe(o.keywords||'')}">${safe(o.name)}${o.keywords?(' - '+safe((o.keywords||'').split(',')[0])):''}</option>`).join('');
+    const sel=document.createElement('select'); sel.id='topOrderSelect'; sel.className='btn sm'; sel.setAttribute('aria-label','Select Order'); sel.style.minWidth='220px';
+    sel.addEventListener('change',e=>{handleSelectOrderAction(null,e.target.value); e.target.value='';});
+    sel.innerHTML = `<option value="">📋 Select Order ▾</option>` + orderOpts;
+    const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.gap='8px'; wrap.style.alignItems='center'; wrap.appendChild(sel);
+    top.appendChild(wrap);
+
+    // SelectedText input (Serial / Case Selection)
+    const st=document.createElement('input'); st.id='selectedText'; st.placeholder='खाली = default rows; 1,2 वा 072-WO-0294'; st.style.minWidth='220px'; st.className='';
+    st.addEventListener('input',e=>{const gg=state.groups[state.activeIndex]; if(gg){gg.selectedText=e.target.value; saveState();}});
+    const lab=document.createElement('div'); lab.style.display='flex'; lab.style.flexDirection='column'; lab.style.gap='4px'; const label=document.createElement('label'); label.textContent='Serial / Case Selection'; label.style.fontSize='11px'; label.style.textTransform='uppercase'; label.style.color='var(--muted)'; label.style.fontWeight='800'; lab.appendChild(label); lab.appendChild(st);
+    top.appendChild(lab);
+    st.value = g.selectedText || '';
+    
+    // Regenerate button (only in preview mode)
+    if(state.activeType==='preview'){
+      const regenBtn=document.createElement('button'); regenBtn.className='btn primary'; regenBtn.style.minWidth='140px';
+      regenBtn.innerHTML='↻ REGENERATE'; regenBtn.onclick=()=>generatePreview(g.no);
+      top.appendChild(regenBtn);
+    }
+    
+    // Tools dropdown
+    const toolsWrapper=document.createElement('div'); toolsWrapper.className='tools-wrapper';
+    const toolsBtn=document.createElement('button'); toolsBtn.id='toolsBtn'; toolsBtn.className='btn'; toolsBtn.innerHTML='Tools ▾'; 
+    toolsBtn.setAttribute('aria-haspopup','true'); toolsBtn.setAttribute('aria-expanded','false');
+    toolsBtn.onclick=()=>toggleToolsMenu();
+    const toolsMenu=document.createElement('div'); toolsMenu.id='toolsMenu'; toolsMenu.className='tools-menu hidden';
+    toolsWrapper.appendChild(toolsBtn); toolsWrapper.appendChild(toolsMenu);
+    top.appendChild(toolsWrapper);
+    renderToolsMenu();
+    
+    // Theme button
+    const themeBtn=document.createElement('button'); themeBtn.id='themeBtn'; themeBtn.className='btn icon'; themeBtn.title='Light/Dark';
+    themeBtn.onclick=()=>toggleTheme();
+    const dark=document.body.getAttribute('data-theme')==='dark';
+    themeBtn.textContent=dark?'🌙':'☀️';
+    top.appendChild(themeBtn);
+  }catch(e){console.warn('renderTopControls error',e)}
+}
+
+function render(){ensureOne();renderTopControls();renderTabs();updateDateDisplay();const app=document.getElementById('app');const g=state.groups[state.activeIndex];if(state.activeType==='input') app.innerHTML=inputView(g); if(state.activeType==='preview') app.innerHTML=previewView(g); if(state.activeType==='history') app.innerHTML=historyView(g); if(state.activeType==='parsed') app.innerHTML=parsedView(g);bindAfterRender();if(state.activeType==='preview'){setTimeout(()=>{restorePreviewState(g.no);},80);}saveState();}
 function updateDateDisplay(){const dd=document.getElementById('dateDisplay');if(dd){const bs=activeSettings().date||todayNepaliLike();dd.textContent=toNep(bs);}}
-function renderTabs(){const tabs=document.getElementById('tabs');tabs.innerHTML=state.groups.map((g,i)=>`<button class="tab ${state.activeIndex===i&&state.activeType==='preview'?'active':''}" onclick="openTab(${i},'preview')">Preview${g.no} <span class="badge">${previewCountText(g)}</span></button>`).join('');renderToolsMenu();}
+function renderTabs(){const tabs=document.getElementById('tabs');tabs.innerHTML='';renderToolsMenu();}
 function renderToolsMenu(){const menu=document.getElementById('toolsMenu');if(!menu)return;const g=state.groups[state.activeIndex];menu.innerHTML=`<button class="btn sm" onclick="openTab(${state.activeIndex},'input');toggleToolsMenu(false)">⌨️ InputTable${g.no}</button><button class="btn sm" onclick="openTab(${state.activeIndex},'parsed');toggleToolsMenu(false)">📊 Parsed Table${g.no}</button><button class="btn sm" onclick="openTab(${state.activeIndex},'history');toggleToolsMenu(false)">🗂️ History${g.no}</button><button class="btn sm primary" onclick="addTableGroup();toggleToolsMenu(false)">＋ Add Table</button>`;const btn=document.getElementById('toolsBtn');if(btn){btn.setAttribute('aria-expanded',!menu.classList.contains('hidden'));}}
 function toggleToolsMenu(open){const menu=document.getElementById('toolsMenu');if(!menu)return;const btn=document.getElementById('toolsBtn');const isOpen=!menu.classList.contains('hidden');const shouldOpen=open===undefined?!isOpen:!!open;menu.classList.toggle('hidden',!shouldOpen);if(btn){btn.setAttribute('aria-expanded',shouldOpen);}if(shouldOpen){renderToolsMenu();}}
 window.addEventListener('click',e=>{const btn=document.getElementById('toolsBtn');const menu=document.getElementById('toolsMenu');if(!btn||!menu)return; if(!btn.contains(e.target) && !menu.contains(e.target)){toggleToolsMenu(false);}})
@@ -265,7 +469,7 @@ function inputView(g){
   const s=g.settings||state.settings;
   return `
   <div class="panel"><div class="panel-head"><div class="panel-title">⌨️ InputTable${g.no}</div><div class="input-tools"><button class="btn x" title="Remove this table" onclick="removeTableGroup(${g.no})">×</button><button class="btn primary" onclick="generatePreview(${g.no})">⚡ Generate Preview</button><button class="btn ok" onclick="loadSampleData(${g.no})">🧪 Load Sample Data</button><button class="btn" onclick="usePreviousInput(${g.no})">↩ Use Previous</button><button class="btn danger" onclick="clearInput(${g.no})">🧹 Clear Input</button></div></div>
-  <div class="panel-body"><div class="grid"><div><label>Parse Mode</label><select id="mode"><option value="auto">Auto Detect</option><option value="html">HTML Table</option><option value="json">JSON Array</option><option value="text">Plain Text / TSV</option></select></div><div><label>अदालत / Court</label><input id="inputCourt" placeholder="Source code को h1 बाट auto-fill" value="${safe(s.court||meta.court||'')}"></div><div><label>पेशी मिति / Date</label><input id="inputDate" placeholder="२०८३-०२-२९ वा २०८३०२२९" value="${safe(normalizeDateInput(s.date||meta.date||todayNepaliLike()))}"></div><div><label>Status</label><div class="badge warn">Rows: ${g.rows.length} | Preview: ${g.previews.length} | History: ${g.history.length}</div></div></div><div style="margin-top:10px"><label>Serial / Case Selection</label><input id="selectedText" placeholder="खाली = default rows; 1,2 वा 072-WO-0294" value="${safe(g.selectedText)}"></div><div id="benchSourceWrap" style="margin-top:10px">${benchSourceSelectHtml(g,blocks)}</div><br><label>Cause List Data Paste गर्नुहोस्</label><textarea id="inputText" placeholder="HTML source code, HTML table, JSON array, copied table text, वा manually typed cause list यहाँ paste गर्नुहोस्...">${safe(g.input)}</textarea><p class="hint">Tip: source code paste गर्दा <span class="kbd">pesi_date</span> बाट मिति र <span class="kbd">h1</span> बाट अदालत स्वतः भरिन्छ। Date मा <span class="kbd">yyyy-mm-dd</span> वा <span class="kbd">yyyymmdd</span> दुवै स्वीकार हुन्छ। धेरै causelist table भएमा Bench/Judge dropdown बाट चाहिएको causelist छान्नुहोस्। Settings को <span class="kbd">इजलास</span> manual/independent रहन्छ र source-code bench बाट overwrite हुँदैन।</p></div></div>`}
+  <div class="panel-body"><div class="grid"><div><label>Parse Mode</label><select id="mode"><option value="auto">Auto Detect</option><option value="html">HTML Table</option><option value="json">JSON Array</option><option value="text">Plain Text / TSV</option></select></div><div><label>अदालत / Court</label><input id="inputCourt" placeholder="Source code को h1 बाट auto-fill" value="${safe(s.court||meta.court||'')}"></div><div><label>पेशी मिति / Date</label><input id="inputDate" placeholder="२०८३-०२-२९ वा २०८३०२२९" value="${safe(normalizeDateInput(s.date||meta.date||todayNepaliLike()))}"></div><div><label>Status</label><div class="badge warn">Rows: ${g.rows.length} | Preview: ${g.previews.length} | History: ${g.history.length}</div></div></div><div id="benchSourceWrap" style="margin-top:10px">${benchSourceSelectHtml(g,blocks)}</div><br><label>Cause List Data Paste गर्नुहोस्</label><textarea id="inputText" placeholder="HTML source code, HTML table, JSON array, copied table text, वा manually typed cause list यहाँ paste गर्नुहोस्...">${safe(g.input)}</textarea><p class="hint">Tip: source code paste गर्दा <span class="kbd">pesi_date</span> बाट मिति र <span class="kbd">h1</span> बाट अदालत स्वतः भरिन्छ। Date मा <span class="kbd">yyyy-mm-dd</span> वा <span class="kbd">yyyymmdd</span> दुवै स्वीकार हुन्छ। धेरै causelist table भएमा Bench/Judge dropdown बाट चाहिएको causelist छान्नुहोस्। Settings को <span class="kbd">इजलास</span> manual/independent रहन्छ र source-code benchबाट overwrite हुँदैन।</p></div></div>`}
 function parsedView(g){return `<div class="panel"><div class="panel-head"><div class="panel-title">📊 Parsed Table${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button><button class="btn primary" onclick="generatePreview(${g.no})">⚡ Generate Preview</button></div></div><div class="panel-body">${tableHtml(g)}</div></div>`}
 function bindAfterRender(){
   const g=state.groups[state.activeIndex];
@@ -293,6 +497,14 @@ function usePreviousInput(no){const idx=state.groups.findIndex(g=>g.no===no);for
 function loadSampleData(no){const g=getGroup(no);if(!g)return;g.input=SAMPLE_CAUSELIST_HTML;g.mode='html';g.inputCourtManual=false;g.inputDateManual=false;applySourceMetaToGroup(g,{overwriteManual:false,updateDom:false});state.activeIndex=state.groups.findIndex(x=>x.no===no);state.activeType='input';render();toast('Sample cause list load भयो। Preview auto populate हुँदैछ।','ok');setTimeout(()=>generatePreview(no),80)}
 function getGroup(no){return state.groups.find(g=>g.no===no)}
 
+function previewMatchKey(item){
+  const candidates=[item?.caseNo,item?.displayCaseNo,item?.serial,item?.rawCaseNo,item?.previewName,item?.saveId,item?.historyId];
+  for(const candidate of candidates){
+    const key=normCase(String(candidate||''));
+    if(key) return key;
+  }
+  return '';
+}
 function generatePreview(no){
   const g=getGroup(no);
   if(!g)return;
@@ -319,7 +531,35 @@ function generatePreview(no){
   if(!String(g.settings.date||'').trim())g.settings.date=todayNepaliLike();
   if(!String(g.settings.bench||'').trim())g.settings.bench='इजलास';
   const chosen=eligibleRows(g);
-  g.previews=chosen.map((row,idx)=>makePreview(g,row,idx));
+  const savedMap=new Map();
+  for(const item of (g.history||[]).filter(x=>x&&x.saved&&!x.removed)){
+    const key=previewMatchKey(item);
+    if(!key) continue;
+    savedMap.set(key,item);
+  }
+  for(const item of (g.previews||[]).filter(x=>x&&x.saved&&!x.removed)){
+    const key=previewMatchKey(item);
+    if(!key) continue;
+    if(!savedMap.has(key)) savedMap.set(key,item);
+  }
+  g.previews=chosen.map((row,idx)=>{
+    const rowKey=previewMatchKey(row.obj);
+    const saved=savedMap.get(rowKey);
+    if(saved){
+      return {
+        ...saved,
+        rowIndex:idx,
+        saved:true,
+        dirty:false,
+        editMode:false,
+        updatedAt:Date.now(),
+        content:saved.content||orderHtml(row.obj,'वादी','प्रतिवादी',g),
+        previewName:saved.previewName||labelWithCaseName(row.obj),
+        saveId:saved.saveId||saved.previewName||labelWithCaseName(row.obj)
+      };
+    }
+    return makePreview(g,row,idx);
+  });
   state.activeType='preview';
   render();
   const blockInfo=parsed.sourceBlock?` (${parsed.sourceBlock.label})`:'';
@@ -487,13 +727,41 @@ function orderHtml(o,role1='वादी',role2='प्रतिवादी',g=
 <div class="sig">${safe(s.signature)}</div>
 <div class="iti-line"><span class="iti-text">${safe(formatItiDate(s.date))}</span><span class="tab-leader"></span></div>`
 }
-function previewView(g){const visible=visiblePreviews(g);return `<button class="btn ok floating-save" onclick="saveActivePreview()" title="Save active preview card">💾 Save</button><div class="preview-float-nav" aria-label="Preview scroll navigation"><button class="btn" onclick="previewGoTop(${g.no})" title="Go to Top">⬆️</button><button class="btn" onclick="previewGoBottom(${g.no})" title="Go to Bottom">⬇️</button><button class="btn pick" onclick="previewPickLeft(${g.no})" title="Pick from where you left">📍</button></div><div class="workspace"><aside class="side"><div class="panel"><div class="panel-head"><div class="panel-title">🧭 Preview${g.no} Navigation</div><span class="badge">${previewCountText(g)}</span></div><div class="panel-body"><div class="preview-tools"><select class="btn sm" onchange="handlePreviewDropdownAction(${g.no},this.value);this.value=''" aria-label="Preview actions"><option value="">⚙️ Preview actions</option><option value="filters">⚙️ Display / Filter Options ▾</option><option value="zip">🗜 ZIP</option><option value="combined">📚 Combined DOCX</option><option value="trash">🗑 Trash (${(state.trash||[]).length})</option></select></div><br><div class="nav-list">${visible.length?visible.map(p=>navItem(g,p)).join(''):'<div class="empty">Preview खाली छ।</div>'}</div></div></div></aside><main class="maincol"><div class="panel"><div class="panel-head"><div class="panel-title">👁️ Preview${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button><button class="btn primary" onclick="generatePreview(${g.no})">↻ Regenerate</button></div></div><div class="panel-body"><div class="doc-list">${visible.length?visible.map(p=>docItem(g,p)).join(''):'<div class="empty">Preview बनाउन InputTable मा गएर Generate Preview गर्नुहोस्।</div>'}</div></div></div></main></div>`}
+function previewView(g){const visible=visiblePreviews(g);const orderOpts=ORDER_VARIETIES.map(o=>'<option value="'+safe(o.name)+'" title="'+safe(o.keywords||'')+'">'+(safe(o.name)+(o.keywords?' - '+safe(o.keywords.split(',')[0]):''))+'</option>').join('');return `<button class="btn ok floating-save" onclick="saveActivePreview()" title="Save active preview card">💾 Save</button><div class="preview-float-nav" aria-label="Preview scroll navigation"><button class="btn" onclick="previewGoTop(${g.no})" title="Go to Top">⬆️</button><button class="btn" onclick="previewGoBottom(${g.no})" title="Go to Bottom">⬇️</button><button class="btn pick" onclick="previewPickLeft(${g.no})" title="Pick from where you left">📍</button></div><div class="workspace"><aside class="side"><div class="panel"><div class="panel-head"><div class="panel-title">🧭 Preview Navigation</div><span class="badge">${previewCountText(g)}</span></div><div class="panel-body"><div class="preview-tools"><select class="btn sm" onchange="handlePreviewGroupSwitch(this.value);this.value=''" aria-label="Select preview"><option value="">Preview ▾</option>${state.groups.map((grp,idx)=>`<option value="${idx}">Preview${grp.no} (${previewCountText(grp)} आदेश)</option>`).join('')}</select></div><div class="preview-tools" style="margin-top:8px"><select class="btn sm" onchange="handlePreviewDropdownAction(${g.no},this.value);this.value=''" aria-label="Preview actions"><option value="">⚙️ Actions</option><option value="filters">⚙️ Display / Filter Options ▾</option><option value="zip">🗜 ZIP</option><option value="combined">📚 Combined DOCX</option><option value="trash">🗑 Trash (${(state.trash||[]).length})</option></select></div><br><div class="nav-list">${visible.length?visible.map(p=>navItem(g,p)).join(''):'<div class="empty">Preview खाली छ।</div>'}</div></div></div></aside><main class="maincol"><div class="panel"><div class="panel-head"><div class="panel-title">👁️ Preview${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button></div></div><div class="panel-body"><div class="doc-list">${visible.length?visible.map(p=>docItem(g,p)).join(''):'<div class="empty">Preview बनाउन InputTable मा गएर Generate Preview गर्नुहोस्।</div>'}</div></div></div></main></div>`}
+function handlePreviewGroupSwitch(index){const idx=parseInt(index,10);if(isNaN(idx)||idx<0||idx>=state.groups.length)return;openTab(idx,'preview');}
 function handlePreviewDropdownAction(no,action){
   if(!action)return;
   if(action==='filters')return openFilterPanel();
   if(action==='zip')return downloadVisibleZip(no);
   if(action==='combined')return downloadVisibleCombined(no);
   if(action==='trash')return openTrashPanel();
+}
+
+function handleSelectOrderAction(no,orderName){
+  if(!orderName)return;
+  const order=ORDER_VARIETIES.find(o=>o.name===orderName);
+  if(!order)return toast('Order भेटिएन।','danger');
+  insertOrderIntoActivePreview(order);
+}
+
+function insertOrderIntoActivePreview(order){
+  if(!state.activePreviewId)return toast('पहिले कुनै preview card छान्नुहोस्।','danger');
+  const fp=findPreview(state.activePreviewId);
+  if(!fp)return toast('Active preview भेटिएन।','danger');
+  
+  const doc=document.getElementById('doc_'+state.activePreviewId);
+  if(!doc)return toast('Document element भेटिएन।','danger');
+  
+  const bodyElement=doc.querySelector('.body');
+  if(!bodyElement)return toast('Body element भेटिएन।','danger');
+  
+  if(order.contentHtml){
+    bodyElement.innerHTML = order.contentHtml;
+  } else {
+    bodyElement.textContent = order.content || '';
+  }
+  markUnsaved(state.activePreviewId);
+  toast(`"${order.name}" order body मा insert भयो। Save गर्न सक्नु हुन्छ।`,'ok');
 }
 
 function filterHtml(){return `<div class="filter-list" style="padding:10px"><label class="check"><input type="checkbox" ${state.filters.nonEmpty?'checked':''} onchange="setFilter('nonEmpty',this.checked)">Show preview of non-empty first cell rows only</label><label class="check"><input type="checkbox" ${state.filters.all?'checked':''} onchange="setFilter('all',this.checked)">Show all rows preview</label><label class="check"><input type="checkbox" ${state.filters.selected?'checked':''} onchange="setFilter('selected',this.checked)">Show preview to selected rows only</label><label class="check"><input type="checkbox" ${state.filters.saved?'checked':''} onchange="setFilter('saved',this.checked)">Show preview of files saved as history</label><label class="check"><input type="checkbox" ${state.filters.unsaved?'checked':''} onchange="setFilter('unsaved',this.checked)">Show preview of files not saved as history</label></div>`}
@@ -864,7 +1132,7 @@ function showSettings(){
 }
 
 async function applySettings(){const g=state.groups[state.activeIndex];ensureGroupSettings(g);const current=g?g.settings:state.settings;const newSettings={...current,bench:setBench.value||'इजलास',judge:setJudge.value||DEFAULT_JUDGE,signature:setSig.value||DEFAULT_SIGNATURE,body:setBody.value,fontSize:Number(setFont.value)||12,lineSpacing:Number(setLineSpacing.value)||1.15};if(g){g.settings=newSettings;} else {state.settings=newSettings;}closeModal();render();toast('Settings save भयो','ok')}
-function toggleTheme(){const b=document.body;const dark=b.getAttribute('data-theme')==='dark';b.setAttribute('data-theme',dark?'light':'dark');themeBtn.textContent=dark?'☀️':'🌙'}
+function toggleTheme(){const b=document.body;const dark=b.getAttribute('data-theme')==='dark';b.setAttribute('data-theme',dark?'light':'dark');const btn=document.getElementById('themeBtn');if(btn)btn.textContent=dark?'☀️':'🌙'}
 
 function closeModal(){const box=actionModal();if(!box)return;box.classList.add('hidden');box.innerHTML=''}
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
@@ -1076,7 +1344,8 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.classList.contains('hidden'))closeModal();});
 window.addEventListener('scroll',()=>{window.clearTimeout(window.__previewActiveTimer);window.__previewActiveTimer=setTimeout(()=>{if(state.activeType==='preview'){const g=state.groups[state.activeIndex];if(g){if(!state.previewStates)state.previewStates={};state.previewStates[g.no]={...(state.previewStates[g.no]||{}),scrollY:window.scrollY||document.documentElement.scrollTop||0,activePreviewId:state.activePreviewId||''};}updateActivePreviewFromViewport();}},80);},{passive:true});
-loadState();render();
+loadState();
+loadOrderVarieties().then(()=>{render();}).catch(e=>{console.warn('Failed loading order varieties',e);render();});
 </script>
 </body>
 </html>
