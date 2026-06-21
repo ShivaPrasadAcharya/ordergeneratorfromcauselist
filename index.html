@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auto Order Generator</title>
+  <title>Auto Order Generator v7</title>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,9 +39,8 @@
     .history-items{display:grid;gap:8px;padding:12px}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:13px;background:var(--panel)}
     .toastbox{position:fixed;right:18px;bottom:18px;display:grid;gap:8px;z-index:99}.toast{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--brand);box-shadow:var(--shadow);padding:10px 13px;border-radius:12px;max-width:360px;font-weight:700}.toast.ok{border-left-color:var(--ok)}.toast.danger{border-left-color:var(--danger)}
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:100}.modal-card{width:min(520px,calc(100vw - 28px));background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}.modal-title{font-weight:850;color:var(--brand);font-size:17px;margin-bottom:10px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.kbd{font-family:monospace;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:1px 6px;color:var(--brand)}
-    .floating-save{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:80;min-width:92px;min-height:54px;border-radius:999px;box-shadow:var(--shadow);font-size:14px}.floating-save:active{transform:translateY(-50%) scale(.98)}
-    .preview-float-nav{position:fixed;right:18px;top:calc(50% + 70px);z-index:80;display:grid;gap:8px}.preview-float-nav .btn{width:44px;height:44px;border-radius:999px;padding:0;box-shadow:var(--shadow);font-size:18px}.preview-float-nav .btn.pick{font-size:16px}
-    @media(max-width:900px){.floating-save{right:12px;bottom:18px;top:auto;transform:none;min-width:82px}.floating-save:active{transform:scale(.98)}.preview-float-nav{right:12px;bottom:84px;top:auto}.preview-float-nav .btn{width:40px;height:40px}}
+    .floating-action-stack{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:80;display:grid;gap:6px}.floating-action-stack .btn,.floating-action-stack .fmtbtn{width:40px;height:40px;min-width:40px;min-height:40px;border-radius:999px;padding:0;box-shadow:var(--shadow);font-size:16px}.floating-action-stack .fmtbtn,.floating-action-stack .floating-edit,.floating-action-stack .floating-save{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;font-size:12px!important}.floating-action-stack .fmtbtn{background:var(--paper);font-weight:900}.floating-action-stack .fmtbtn:hover{background:var(--panel2);border-color:var(--brand2);color:var(--brand)}.floating-action-stack .floating-edit{background:var(--paper);color:var(--info);border-color:rgba(49,95,159,.35)}.floating-action-stack .floating-edit:hover{background:rgba(49,95,159,.12)}.floating-action-stack .floating-save{border-width:2px}.floating-action-stack .floating-save.save-unsaved{background:#7f1d1d!important;color:#fff!important;border-color:#7f1d1d!important}.floating-action-stack .floating-save.save-saved{background:#14532d!important;color:#fff!important;border-color:#14532d!important}.floating-action-stack .btn:active,.floating-action-stack .fmtbtn:active{transform:scale(.98)}.doc[data-editmode="true"]{outline:2px dashed #315f9f;outline-offset:4px}.doc[data-editmode="true"] *{cursor:text}
+    @media(max-width:900px){.floating-action-stack{right:12px;top:auto;bottom:18px;transform:none;gap:5px}.floating-action-stack .btn{width:38px;height:38px;min-width:38px;min-height:38px;font-size:15px}.floating-action-stack .fmtbtn,.floating-action-stack .floating-edit,.floating-action-stack .floating-save{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;font-size:11px!important}}
     #printArea{display:none}
     .source-row-highlight td{background:#fff6b3!important;box-shadow:inset 0 0 0 2px #f2c94c}
     /* Clean spacious top ribbon */
@@ -51,11 +50,11 @@
     .top-controls{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex:1;min-width:0;flex-wrap:wrap}
     .top-control{display:flex;align-items:center;gap:8px;min-width:0}.top-control-label{font-size:11px;font-weight:850;color:var(--muted);white-space:nowrap;letter-spacing:.02em}
     .top-field{width:auto;height:38px;min-height:38px;border-radius:999px;padding:0 14px;background:var(--panel);border:1px solid var(--line);color:var(--ink);font-weight:800;box-shadow:none;line-height:1.1}
-    .top-preview-select{min-width:142px;max-width:170px}.top-order-select{min-width:190px;max-width:230px}.top-serial-input{min-width:230px;max-width:285px}
+    .top-preview-select{min-width:142px;max-width:170px}.top-order-select{min-width:190px;max-width:230px}.top-action-select{min-width:170px;max-width:220px}.top-order-child-select{min-width:190px;max-width:250px}.top-serial-input{min-width:230px;max-width:285px}
     .top-refresh-btn{height:38px;min-width:44px;border-radius:999px;padding:0 14px;font-size:16px}.top-actions{flex:0 0 auto;gap:10px;align-items:center}.date-pill{display:inline-flex;align-items:center;height:38px;padding:0 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-weight:850;color:var(--brand);font-size:13px;white-space:nowrap}.settings-btn{height:38px;border-radius:999px;padding:0 14px;white-space:nowrap}
     .settings-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 14px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
     .settings-toolbar-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.settings-tools .tools-menu{left:0;right:auto;top:calc(100% + 8px);min-width:240px}.settings-theme-btn{border-radius:999px}.modal-card{max-height:calc(100vh - 32px);overflow:auto}
-    @media(max-width:900px){.top-inner{padding:10px 14px;gap:10px}.brand{min-width:100%}.top-controls{justify-content:flex-start;width:100%;gap:9px}.top-actions{width:100%;justify-content:space-between}.top-preview-select,.top-order-select,.top-serial-input{min-width:0;max-width:none;flex:1}.top-field{height:36px}.settings-btn,.date-pill{height:36px}}
+    @media(max-width:900px){.top-inner{padding:10px 14px;gap:10px}.brand{min-width:100%}.top-controls{justify-content:flex-start;width:100%;gap:9px}.top-actions{width:100%;justify-content:space-between}.top-preview-select,.top-action-select,.top-order-select,.top-order-child-select,.top-serial-input{min-width:0;max-width:none;flex:1}.top-field{height:36px}.settings-btn,.date-pill{height:36px}}
     @media print{
       body.print-mode > *:not(#printArea){display:none!important}
       body.print-mode #printArea{display:block!important}
@@ -73,7 +72,7 @@
       <div id="topControls" class="top-controls"></div>
       <div class="top-actions">
         <span id="dateDisplay" class="date-pill">-</span>
-        <button class="btn info settings-btn" onclick="showSettings()">⚙️ Settings</button>
+        <button class="btn info settings-btn" onclick="showSettings()" title="Settings" aria-label="Settings">⚙️</button>
       </div>
     </div>
   </div>
@@ -138,11 +137,82 @@ const DEFAULT_SIGNATURE='न्यायाधीश';
 const LEGACY_DEFAULT_JUDGES=[DEFAULT_JUDGE,'माननीय जिल्ला न्यायाधीश','न्यायाधीश'];
 const LEGACY_DEFAULT_SIGNATURES=[DEFAULT_SIGNATURE];
 const ORDER_VARIETIES=[
-  {name:'रोक्का (Fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
-  {name:'रोक्का (Successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''},
+  // v2 dependent dropdown support:
+  // Folder entries use: {name:'folder-name', files:[{name:'file-name', filename:'file.txt'}, ...]}
+  // Old flat entries still work. Flat items may also use folder:'folder-name'.
+  {name:'rokka', files:[
+    {name:'rokka(fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
+    {name:'rokka(successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''}
+  ]},
   {name:'नाबालिक भेट आदेश',filename:'nabalik_bhet_adesh.docx',keywords:'नाबालिक भेट आदेश, word, docx',content:''},
   {name:'तायदाती फाँटवारी',filename:'tayadati.json',keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी',content:''}
 ];
+
+function orderVarietyFiles(){
+  const out=[];
+  ORDER_VARIETIES.forEach((entry,rootIndex)=>{
+    if(!entry)return;
+    if(Array.isArray(entry.files)){
+      const folderName=String(entry.folder||entry.name||entry.label||('Folder '+(rootIndex+1))).trim();
+      const folderPath=String(entry.path||entry.folderPath||entry.folder||entry.name||'').trim();
+      entry.files.forEach((file,childIndex)=>{
+        if(!file)return;
+        file._orderKey='folder:'+rootIndex+':'+childIndex;
+        file._orderFolder=folderName;
+        file._orderFolderPath=folderPath;
+        file._orderDisplayName=String(file.name||file.label||file.filename||('Item '+(childIndex+1))).trim();
+        out.push(file);
+      });
+    }else if(entry.filename || entry.content || entry.contentHtml){
+      entry._orderKey='item:'+rootIndex;
+      entry._orderFolder=String(entry.folder||entry.folderName||'').trim();
+      entry._orderDisplayName=String(entry.name||entry.label||entry.filename||('Item '+(rootIndex+1))).trim();
+      out.push(entry);
+    }
+  });
+  return out;
+}
+function buildOrderVarietyTree(){
+  const folders=[];
+  const folderMap=new Map();
+  const standalone=[];
+  orderVarietyFiles().forEach(item=>{
+    const folder=String(item._orderFolder||'').trim();
+    if(folder){
+      if(!folderMap.has(folder)){folderMap.set(folder,{name:folder,items:[]});folders.push(folderMap.get(folder));}
+      folderMap.get(folder).items.push(item);
+    }else{
+      standalone.push(item);
+    }
+  });
+  return {folders,standalone};
+}
+function findOrderVariety(value){
+  const key=String(value||'');
+  return orderVarietyFiles().find(o=>o._orderKey===key || o.name===key || o._orderDisplayName===key || o.filename===key);
+}
+function orderParentOptionsHtml(){
+  const tree=buildOrderVarietyTree();
+  let html='<option value="">📋 Select Order</option>';
+  tree.folders.forEach((folder,idx)=>{html+=`<option value="folder:${idx}">📁 ${safe(folder.name)}</option>`;});
+  tree.standalone.forEach(item=>{
+    const label=item._orderDisplayName||item.name||item.filename||'Order';
+    const hint=item.keywords?(' - '+String(item.keywords).split(',')[0]):'';
+    html+=`<option value="order:${safe(item._orderKey)}" title="${safe(item.keywords||'')}">${safe(label)}${safe(hint)}</option>`;
+  });
+  return html;
+}
+function orderChildOptionsHtml(folderIndex){
+  const tree=buildOrderVarietyTree();
+  const folder=tree.folders[Number(folderIndex)];
+  if(!folder)return '';
+  return `<option value="">↳ ${safe(folder.name)} भित्रको file छान्नुहोस्</option>` + folder.items.map(item=>{
+    const label=item._orderDisplayName||item.name||item.filename||'Order';
+    const keywords=String(item.keywords||'').trim();
+    const keywordLine=keywords ? `<option value="" disabled class="order-keyword-option">   ↳ keywords: ${safe(keywords)}</option>` : '';
+    return `<option value="${safe(item._orderKey)}" title="${safe(keywords)}">${safe(label)}</option>${keywordLine}`;
+  }).join('');
+}
 
 function xmlEsc(s=''){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function wrapTextWithStyle(text,opt={}){
@@ -225,13 +295,17 @@ function docBinaryToHtml(buf){
   return lines.map(line=>xmlEsc(line)).join('<br/>');
 }
 async function loadOrderVarieties(){
-  const basePaths=['ordervarieties/','./ordervarieties/'];
-  await Promise.all(ORDER_VARIETIES.map(async (o)=>{
+  const rootPaths=['ordervarieties/','./ordervarieties/'];
+  await Promise.all(orderVarietyFiles().map(async (o)=>{
     if(!o || !o.filename) return;
     const ext = String(o.filename||'').trim().toLowerCase().split('.').pop();
     let text='';
     let buffer=null;
-    for(const p of basePaths){
+    const folderPath=String(o.path||o.folderPath||o._orderFolderPath||o._orderFolder||'').trim().replace(/^\/+|\/+$/g,'');
+    const basePaths=[];
+    if(folderPath){rootPaths.forEach(root=>basePaths.push(root+folderPath+'/'));}
+    rootPaths.forEach(root=>basePaths.push(root));
+    for(const p of [...new Set(basePaths)]){
       try{
         const url = p + o.filename;
         const res = await fetch(url);
@@ -396,35 +470,65 @@ function renderTopControls(){
     top.className='top-controls';
     top.innerHTML = '';
 
-    // Preview dropdown: always visible in the top ribbon. Default shows Preview1.
-    const previewWrap=document.createElement('div');
-    previewWrap.className='top-control';
+    // 1) Preview dropdown
     const previewSel=document.createElement('select');
     previewSel.id='topPreviewSelect';
     previewSel.className='top-field top-preview-select';
     previewSel.setAttribute('aria-label','Preview select');
     previewSel.innerHTML=(state.groups.length?state.groups:[newGroup(1)]).map((grp,i)=>`<option value="${i}">Preview${safe(grp.no||i+1)}</option>`).join('');
     previewSel.value=String(state.activeIndex||0);
+    previewSel.addEventListener('mousedown',e=>{
+      // Preview control also works as a direct link to the latest preview page.
+      if(state.activeType!=='preview'){
+        saveCurrentPreviewState();
+        state.activeType='preview';
+        render();
+      }
+    });
+    previewSel.addEventListener('click',e=>{
+      if(state.activeType!=='preview'){
+        saveCurrentPreviewState();
+        state.activeType='preview';
+        render();
+      }
+    });
     previewSel.addEventListener('change',e=>{
       saveCurrentPreviewState();
       state.activeIndex=Number(e.target.value)||0;
       state.activeType='preview';
       render();
     });
-    previewWrap.appendChild(previewSel);
-    top.appendChild(previewWrap);
+    top.appendChild(previewSel);
 
-    // Order select
-    const orderOpts = ORDER_VARIETIES.map(o=>`<option value="${safe(o.name)}" title="${safe(o.keywords||'')}">${safe(o.name)}${o.keywords?(' - '+safe((o.keywords||'').split(',')[0])):''}</option>`).join('');
+    // 2) Action dropdown (top ribbon)
+    if(state.activeType==='preview'){
+      const actionSel=document.createElement('select');
+      actionSel.id='topActionSelect';
+      actionSel.className='top-field top-action-select';
+      actionSel.setAttribute('aria-label','Preview Actions');
+      actionSel.innerHTML=`<option value="">⚙️ Action</option><option value="filters">⚙️ Display / Filter Options ▾</option><option value="zip">🗜 ZIP</option><option value="combined">📚 Combined DOCX</option><option value="trash">🗑 Trash (${(state.trash||[]).length})</option>`;
+      actionSel.addEventListener('change',e=>{handlePreviewDropdownAction(g.no,e.target.value);e.target.value='';});
+      top.appendChild(actionSel);
+    }
+
+    // 3) Select Order + dependent child dropdown
     const sel=document.createElement('select');
     sel.id='topOrderSelect';
     sel.className='top-field top-order-select';
     sel.setAttribute('aria-label','Select Order');
-    sel.addEventListener('change',e=>{handleSelectOrderAction(null,e.target.value); e.target.value='';});
-    sel.innerHTML = `<option value="">📋 Select Order</option>` + orderOpts;
+    sel.innerHTML = orderParentOptionsHtml();
+    sel.addEventListener('change',e=>handleOrderParentChange(e.target.value));
     top.appendChild(sel);
 
-    // SelectedText input (Serial / Case Selection)
+    const childSel=document.createElement('select');
+    childSel.id='topOrderChildSelect';
+    childSel.className='top-field top-order-child-select hidden';
+    childSel.setAttribute('aria-label','Select Order File');
+    childSel.title='Folder भित्रका files: name को ठीक तल keywords देखिन्छ।';
+    childSel.addEventListener('change',e=>handleOrderChildChange(e.target.value));
+    top.appendChild(childSel);
+
+    // 4) Serial / case selection
     const st=document.createElement('input');
     st.id='selectedText';
     st.className='top-field top-serial-input';
@@ -433,7 +537,7 @@ function renderTopControls(){
     st.addEventListener('input',e=>{const gg=state.groups[state.activeIndex]; if(gg){gg.selectedText=e.target.value; saveState();}});
     top.appendChild(st);
 
-    // Regenerate button (only in preview mode)
+    // 5) Regenerate
     if(state.activeType==='preview'){
       const regenBtn=document.createElement('button');
       regenBtn.className='btn primary top-refresh-btn';
@@ -757,7 +861,71 @@ function orderHtml(o,role1='वादी',role2='प्रतिवादी',g=
 <div class="sig">${safe(s.signature)}</div>
 <div class="iti-line"><span class="iti-text">${safe(formatItiDate(s.date))}</span><span class="tab-leader"></span></div>`
 }
-function previewView(g){const visible=visiblePreviews(g);const orderOpts=ORDER_VARIETIES.map(o=>'<option value="'+safe(o.name)+'" title="'+safe(o.keywords||'')+'">'+(safe(o.name)+(o.keywords?' - '+safe(o.keywords.split(',')[0]):''))+'</option>').join('');return `<button class="btn ok floating-save" onclick="saveActivePreview()" title="Save active preview card">💾 Save</button><div class="preview-float-nav" aria-label="Preview scroll navigation"><button class="btn" onclick="previewGoTop(${g.no})" title="Go to Top">⬆️</button><button class="btn" onclick="previewGoBottom(${g.no})" title="Go to Bottom">⬇️</button><button class="btn pick" onclick="previewPickLeft(${g.no})" title="Pick from where you left">📍</button></div><div class="workspace"><aside class="side"><div class="panel"><div class="panel-head"><div class="panel-title">🧭 Preview Navigation</div><span class="badge">${previewCountText(g)}</span></div><div class="panel-body"><div class="preview-tools"><select class="btn sm" onchange="handlePreviewGroupSwitch(this.value);this.value=''" aria-label="Select preview"><option value="">Preview ▾</option>${state.groups.map((grp,idx)=>`<option value="${idx}">Preview${grp.no} (${previewCountText(grp)} आदेश)</option>`).join('')}</select></div><div class="preview-tools" style="margin-top:8px"><select class="btn sm" onchange="handlePreviewDropdownAction(${g.no},this.value);this.value=''" aria-label="Preview actions"><option value="">⚙️ Actions</option><option value="filters">⚙️ Display / Filter Options ▾</option><option value="zip">🗜 ZIP</option><option value="combined">📚 Combined DOCX</option><option value="trash">🗑 Trash (${(state.trash||[]).length})</option></select></div><br><div class="nav-list">${visible.length?visible.map(p=>navItem(g,p)).join(''):'<div class="empty">Preview खाली छ।</div>'}</div></div></div></aside><main class="maincol"><div class="panel"><div class="panel-head"><div class="panel-title">👁️ Preview${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button></div></div><div class="panel-body"><div class="doc-list">${visible.length?visible.map(p=>docItem(g,p)).join(''):'<div class="empty">Preview बनाउन InputTable मा गएर Generate Preview गर्नुहोस्।</div>'}</div></div></div></main></div>`}
+
+function activePreviewForFloating(g,visible){
+  visible=Array.isArray(visible)?visible:visiblePreviews(g);
+  const current=visible.find(p=>p.id===state.activePreviewId);
+  if(current)return current;
+  const ps=(state.previewStates||{})[g&&g.no];
+  if(ps&&ps.activePreviewId){const saved=visible.find(p=>p.id===ps.activePreviewId);if(saved)return saved;}
+  return visible[0]||null;
+}
+function floatingSaveInfo(g,visible){
+  const p=activePreviewForFloating(g,visible);
+  const isSaved=!!(p&&p.saved&&!p.dirty);
+  return {id:p?p.id:'',cls:isSaved?'save-saved':'save-unsaved',title:isSaved?'Saved active preview':'Unsaved active preview — click to save',label:isSaved?'Saved':'Unsaved'};
+}
+function updateFloatingSaveButton(){
+  const btn=document.getElementById('floatingSaveBtn');
+  if(!btn)return;
+  const fp=findPreview(state.activePreviewId);
+  const isSaved=!!(fp&&fp.p.saved&&!fp.p.dirty);
+  btn.classList.toggle('save-saved',isSaved);
+  btn.classList.toggle('save-unsaved',!isSaved);
+  btn.title=isSaved?'Saved active preview':'Unsaved active preview — click to save';
+  btn.setAttribute('aria-label',isSaved?'Saved active preview':'Unsaved active preview. Save active preview.');
+}
+function activePreviewIdForCommand(){
+  // Prefer the card where the caret/selection currently is. If toolbar click did not
+  // originate from the document, fall back to active preview and then visible viewport.
+  let id=rememberFocusedPreviewCursor({silent:true,preserveNav:true}) || state.activePreviewId || '';
+  const g=state.groups[state.activeIndex];
+  if((!id || !document.getElementById('doc_'+id)) && g){
+    const ps=(state.previewStates||{})[g.no]||{};
+    id=(ps.cursor&&ps.cursor.previewId)||ps.activePreviewId||id;
+  }
+  if((!id || !document.getElementById('doc_'+id)) && g){
+    const p=activePreviewForFloating(g,visiblePreviews(g));
+    id=p?p.id:'';
+  }
+  if(id && document.getElementById('doc_'+id)){
+    setActivePreview(id,{scrollNav:false,noSave:true});
+    return id;
+  }
+  return '';
+}
+function preserveToolbarSelection(ev){
+  // Prevent toolbar buttons from taking focus away from the contenteditable preview,
+  // so B/I/U can operate on the user's selected text or current caret position.
+  if(ev && ev.preventDefault)ev.preventDefault();
+  rememberFocusedPreviewCursor({silent:true,preserveNav:true});
+}
+function formatActivePreviewText(cmd){
+  const id=activePreviewIdForCommand();
+  if(!id)return toast('पहिले कुनै preview card/body मा cursor राख्नुहोस्।','danger');
+  formatPreviewText(id,cmd);
+}
+function focusEditActivePreview(){
+  const id=activePreviewIdForCommand();
+  if(!id)return toast('पहिले कुनै preview card/body मा cursor राख्नुहोस्।','danger');
+  focusEdit(id);
+}
+
+function previewView(g){
+  const visible=visiblePreviews(g);
+  const saveInfo=floatingSaveInfo(g,visible);
+  return `<div class="floating-action-stack" aria-label="Floating preview actions"><button class="fmtbtn" title="Bold" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('bold')"><b>B</b></button><button class="fmtbtn" title="Italic" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('italic')"><i>I</i></button><button class="fmtbtn" title="Underline" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('underline')"><u>U</u></button><button class="btn floating-edit" onmousedown="preserveToolbarSelection(event)" onclick="focusEditActivePreview()" title="Edit active preview">✏️</button><button id="floatingSaveBtn" class="btn floating-save ${saveInfo.cls}" onmousedown="preserveToolbarSelection(event)" onclick="saveActivePreview()" title="${safe(saveInfo.title)}" aria-label="${safe(saveInfo.label)} active preview. Save active preview.">💾</button><button class="btn pick" onmousedown="preserveToolbarSelection(event)" onclick="previewPickLeft(${g.no})" title="Pick from where you left">📍</button><button class="btn" onmousedown="preserveToolbarSelection(event)" onclick="previewGoTop(${g.no})" title="Go to Top">⬆️</button><button class="btn" onmousedown="preserveToolbarSelection(event)" onclick="previewGoBottom(${g.no})" title="Go to Bottom">⬇️</button></div><div class="workspace"><aside class="side"><div class="panel"><div class="panel-head"><div class="panel-title">🧭 Preview Navigation</div><span class="badge">${previewCountText(g)}</span></div><div class="panel-body"><div class="nav-list">${visible.length?visible.map(p=>navItem(g,p)).join(''):'<div class="empty">Preview खाली छ।</div>'}</div></div></div></aside><main class="maincol"><div class="panel"><div class="panel-head"><div class="panel-title">👁️ Preview${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button></div></div><div class="panel-body"><div class="doc-list">${visible.length?visible.map(p=>docItem(g,p)).join(''):'<div class="empty">Preview बनाउन InputTable मा गएर Generate Preview गर्नुहोस्।</div>'}</div></div></div></main></div>`
+}
 function handlePreviewGroupSwitch(index){const idx=parseInt(index,10);if(isNaN(idx)||idx<0||idx>=state.groups.length)return;openTab(idx,'preview');}
 function handlePreviewDropdownAction(no,action){
   if(!action)return;
@@ -767,15 +935,46 @@ function handlePreviewDropdownAction(no,action){
   if(action==='trash')return openTrashPanel();
 }
 
+function handleOrderParentChange(value){
+  const parent=document.getElementById('topOrderSelect');
+  const child=document.getElementById('topOrderChildSelect');
+  if(child){child.classList.add('hidden');child.innerHTML='';}
+  if(!value)return;
+  if(value.startsWith('order:')){
+    handleSelectOrderAction(null,value.slice(6));
+    if(parent)parent.value='';
+    return;
+  }
+  if(value.startsWith('folder:')){
+    const folderIndex=value.split(':')[1];
+    if(child){
+      child.innerHTML=orderChildOptionsHtml(folderIndex);
+      child.classList.remove('hidden');
+      child.value='';
+      setTimeout(()=>child.focus(),0);
+    }
+  }
+}
+function handleOrderChildChange(orderKey){
+  if(!orderKey)return;
+  handleSelectOrderAction(null,orderKey);
+  const child=document.getElementById('topOrderChildSelect');
+  if(child)child.value='';
+}
 function handleSelectOrderAction(no,orderName){
   if(!orderName)return;
-  const order=ORDER_VARIETIES.find(o=>o.name===orderName);
+  const order=findOrderVariety(orderName);
   if(!order)return toast('Order भेटिएन।','danger');
   insertOrderIntoActivePreview(order);
 }
 
 function insertOrderIntoActivePreview(order){
-  const id=state.activePreviewId||rememberFocusedPreviewCursor({silent:true});
+  let id=state.activePreviewId||rememberFocusedPreviewCursor({silent:true});
+  if(!id){
+    const g=state.groups[state.activeIndex];
+    const first=g&&((visiblePreviews(g)||[])[0] || (g.previews||[]).find(p=>!p.removed));
+    if(first)id=first.id;
+  }
   if(!id)return toast('पहिले कुनै preview card छान्नुहोस्।','danger');
   const fp=findPreview(id);
   if(!fp)return toast('Active preview भेटिएन।','danger');
@@ -789,11 +988,13 @@ function insertOrderIntoActivePreview(order){
   } else {
     bodyElement.textContent = order.content || '';
   }
+  fp.p.content=doc.innerHTML;
   suppressPreviewAutoScroll(900);
   setActivePreview(id,{scrollNav:false,navBehavior:'auto',noSave:true});
   markUnsaved(id);
   restorePreviewPosition(keep,{delay:false,keepSidebar:true,scrollNav:false,noAutoSync:true});
-  toast(`"${order.name}" order body मा insert भयो। Save गर्न सक्नु हुन्छ।`,'ok');
+  updateFloatingSaveButton();
+  toast(`"${order._orderDisplayName||order.name||order.filename||'Order'}" order body मा insert भयो। Save गर्न सक्नु हुन्छ।`,'ok');
 }
 
 function filterHtml(){return `<div class="filter-list" style="padding:10px"><label class="check"><input type="checkbox" ${state.filters.nonEmpty?'checked':''} onchange="setFilter('nonEmpty',this.checked)">Show preview of non-empty first cell rows only</label><label class="check"><input type="checkbox" ${state.filters.all?'checked':''} onchange="setFilter('all',this.checked)">Show all rows preview</label><label class="check"><input type="checkbox" ${state.filters.selected?'checked':''} onchange="setFilter('selected',this.checked)">Show preview to selected rows only</label><label class="check"><input type="checkbox" ${state.filters.saved?'checked':''} onchange="setFilter('saved',this.checked)">Show preview of files saved as history</label><label class="check"><input type="checkbox" ${state.filters.unsaved?'checked':''} onchange="setFilter('unsaved',this.checked)">Show preview of files not saved as history</label></div>`}
@@ -857,7 +1058,7 @@ function openPreviewActionSheet(id){
   const sid=safe(id);
   const selectedPair=pairKey(fp.p.party1Role||'वादी',fp.p.party2Role||'प्रतिवादी');
   const selectedColor=fp.p.colorStatus||'';
-  box.innerHTML=`<div class="modal-card"><div class="modal-title">⋯ ${title}</div><div class="grid-3"><div><label>Parties status pair</label><select onchange="applyPartyPair('${sid}', this.value)">${partyOptionsHtml(selectedPair)}</select></div><div><label>Navigation color/status</label><select onchange="applyColorStatus('${sid}', this.value)">${colorStatusOptions(selectedColor)}</select></div></div><p class="hint">Parties pair विरूद्ध खण्डमा लागू हुन्छ। Color/status ले preview navigation background मात्र परिवर्तन गर्छ।</p><br><div class="grid-3"><button class="btn primary" onclick="closeModal(); printActiveDocument('${sid}')">🖨️ Print</button><button class="btn info" onclick="closeModal(); showPreviewInTable('${sid}')">📊 Show in table</button><button class="btn" onclick="closeModal(); renamePreview('${sid}')">🏷️ Rename</button><button class="btn" onclick="closeModal(); focusEdit('${sid}')">✏️ Edit selection</button><button class="btn" onclick="closeModal(); downloadOne('${sid}')">📄 DOCX</button><button class="btn" onclick="closeModal(); copyPreviewContent('${sid}')">📋 Copy content</button><button class="btn danger" onclick="closeModal(); removePreview('${sid}')">🗑 Remove</button></div><div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button></div></div>`;
+  box.innerHTML=`<div class="modal-card"><div class="modal-title">⋯ ${title}</div><div class="grid-3"><div><label>Parties status pair</label><select onchange="applyPartyPair('${sid}', this.value)">${partyOptionsHtml(selectedPair)}</select></div><div><label>Navigation color/status</label><select onchange="applyColorStatus('${sid}', this.value)">${colorStatusOptions(selectedColor)}</select></div></div><p class="hint">Parties pair विरूद्ध खण्डमा लागू हुन्छ। Color/status ले preview navigation background मात्र परिवर्तन गर्छ।</p><br><div class="grid-3"><button class="btn primary" onclick="closeModal(); printActiveDocument('${sid}')">🖨️ Print</button><button class="btn info" onclick="closeModal(); showPreviewInTable('${sid}')">📊 Show in table</button><button class="btn" onclick="closeModal(); renamePreview('${sid}')">🏷️ Rename</button><button class="btn" onclick="closeModal(); downloadOne('${sid}')">📄 DOCX</button><button class="btn" onclick="closeModal(); copyPreviewContent('${sid}')">📋 Copy content</button><button class="btn danger" onclick="closeModal(); removePreview('${sid}')">🗑 Remove</button></div><div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button></div></div>`;
   box.classList.remove('hidden');
 }
 
@@ -908,7 +1109,7 @@ function pushTrash(item,reason='Removed'){
   return copy;
 }
 
-function docItem(g,p){const lineSpacing=Number((g.settings?.lineSpacing)||state.settings.lineSpacing||1.15)||1.15;const sid=safe(p.id);return `<div id="wrap_${sid}" data-preview-id="${sid}" class="${state.activePreviewId===p.id?'preview-card-active':''}" onmouseenter="setActivePreview('${sid}')" onclick="setActivePreview('${sid}')"><div class="docbar"><div class="docbar-left"><span class="badge">${safePreviewLabel(p)}</span><span class="${p.saved&&!p.dirty?'saved':'unsaved'}">${p.saved&&!p.dirty?'Saved':'Unsaved'}</span>${p.editMode?'<span class="badge warn">Full edit enabled</span>':''}</div><div class="doc-actions fmtbar" aria-label="Formatting"><button class="fmtbtn" title="Bold" onclick="event.stopPropagation();formatPreviewText('${sid}','bold')"><b>B</b></button><button class="fmtbtn" title="Italic" onclick="event.stopPropagation();formatPreviewText('${sid}','italic')"><i>I</i></button><button class="fmtbtn" title="Underline" onclick="event.stopPropagation();formatPreviewText('${sid}','underline')"><u>U</u></button></div></div><div class="doc" id="doc_${sid}" style="line-height:${lineSpacing};" data-editmode="${p.editMode?'true':'false'}" contenteditable="${p.editMode?'true':'false'}" onmousedown="guardPreviewEdit(event,'${sid}')" onfocusin="setActivePreview('${sid}');rememberPreviewCursor('${sid}',{silent:true})" onkeyup="rememberPreviewCursor('${sid}',{silent:true})" onmouseup="rememberPreviewCursor('${sid}',{silent:true})" onclick="setActivePreview('${sid}');rememberPreviewCursor('${sid}',{silent:true})" oninput="markUnsaved('${sid}');rememberPreviewCursor('${sid}',{silent:true})">${normalizePreviewEditableHtml(p.content,p.editMode)}</div></div>`}
+function docItem(g,p){const lineSpacing=Number((g.settings?.lineSpacing)||state.settings.lineSpacing||1.15)||1.15;const sid=safe(p.id);return `<div id="wrap_${sid}" data-preview-id="${sid}" class="${state.activePreviewId===p.id?'preview-card-active':''}" onmouseenter="setActivePreview('${sid}')" onclick="setActivePreview('${sid}')"><div class="docbar"><div class="docbar-left"><span class="badge">${safePreviewLabel(p)}</span><span class="${p.saved&&!p.dirty?'saved':'unsaved'}">${p.saved&&!p.dirty?'Saved':'Unsaved'}</span>${p.editMode?'<span class="badge warn">Full edit enabled</span>':''}</div></div><div class="doc" id="doc_${sid}" style="line-height:${lineSpacing};" data-editmode="${p.editMode?'true':'false'}" contenteditable="${p.editMode?'true':'false'}" onmousedown="guardPreviewEdit(event,'${sid}')" onfocusin="setActivePreview('${sid}');rememberPreviewCursor('${sid}',{silent:true})" onkeyup="rememberPreviewCursor('${sid}',{silent:true})" onmouseup="rememberPreviewCursor('${sid}',{silent:true})" onclick="setActivePreview('${sid}');rememberPreviewCursor('${sid}',{silent:true})" oninput="markUnsaved('${sid}');rememberPreviewCursor('${sid}',{silent:true})">${normalizePreviewEditableHtml(p.content,p.editMode)}</div></div>`}
 
 function saveActivePreview(){
   let id=state.activePreviewId;
@@ -938,7 +1139,7 @@ function guardPreviewEdit(ev,id){
     const now=Date.now();
     if(now-__editGuardLast>1400){
       __editGuardLast=now;
-      toast('Full edit का लागि (...) → Edit selection प्रयोग गर्नुहोस्।','danger');
+      toast('Full edit का लागि right side को ✏️ floating edit icon प्रयोग गर्नुहोस्।','danger');
     }
   }
 }
@@ -1052,6 +1253,13 @@ function rememberPreviewCursor(id,opts={}){
   const root=editableTargetForPreview(id); if(!root)return;
   const off=getSelectionOffsetWithin(root);
   if(off==null)return;
+  const sel=window.getSelection&&window.getSelection();
+  if(sel&&sel.rangeCount){
+    const r=sel.getRangeAt(0);
+    if(root.contains(r.startContainer)&&root.contains(r.endContainer)){
+      window.__previewLastRange={previewId:id,range:r.cloneRange()};
+    }
+  }
   if(!state.previewStates)state.previewStates={};
   const prev=state.previewStates[fp.g.no]||{};
   state.previewStates[fp.g.no]={...prev,activePreviewId:id,cursor:{previewId:id,offset:off},scrollY:window.scrollY||document.documentElement.scrollTop||0,sideScrollTop:currentPreviewSideScrollTop()};
@@ -1078,20 +1286,39 @@ function restorePreviewCursor(no){
 }
 function formatPreviewText(id,cmd){
   const fp=findPreview(id); if(!fp)return toast('Preview भेटिएन।','danger');
-  setActivePreview(id,{scrollNav:false});
+  setActivePreview(id,{scrollNav:false,noSave:true});
   const target=editableTargetForPreview(id);
   if(!target)return;
-  target.focus();
+  target.focus({preventScroll:true});
   const sel=window.getSelection&&window.getSelection();
   if(!sel)return toast('Selection उपलब्ध छैन।','danger');
-  if(!sel.rangeCount||!target.contains(sel.anchorNode)){
-    const r=document.createRange();r.selectNodeContents(target);r.collapse(false);sel.removeAllRanges();sel.addRange(r);
+  const savedRange=window.__previewLastRange;
+  const selectionInside=sel.rangeCount && target.contains(sel.getRangeAt(0).startContainer) && target.contains(sel.getRangeAt(0).endContainer);
+  if(!selectionInside && savedRange && savedRange.previewId===id && target.contains(savedRange.range.startContainer) && target.contains(savedRange.range.endContainer)){
+    sel.removeAllRanges();
+    sel.addRange(savedRange.range.cloneRange());
   }
-  document.execCommand(cmd,false,null);
+  if(!sel.rangeCount || !target.contains(sel.getRangeAt(0).startContainer)){
+    const g=fp.g;
+    const ps=(state.previewStates||{})[g.no]||{};
+    const cur=ps.cursor&&ps.cursor.previewId===id?ps.cursor:null;
+    if(cur){setSelectionOffsetWithin(target,cur.offset||0);}
+    else {const r=document.createRange();r.selectNodeContents(target);r.collapse(false);sel.removeAllRanges();sel.addRange(r);}
+  }
+  try{
+    document.execCommand(cmd,false,null);
+  }catch(e){
+    console.warn('format command failed',e);
+    return toast('Format लागू गर्न सकिएन।','danger');
+  }
   markUnsaved(id);
-  rememberPreviewCursor(id);
+  rememberPreviewCursor(id,{silent:true,preserveNav:true});
+  const live=document.getElementById('doc_'+id);
+  if(live)fp.p.content=normalizePreviewEditableHtml(live.innerHTML,fp.p.editMode);
+  saveState();
   toast((cmd==='bold'?'Bold':cmd==='italic'?'Italic':'Underline')+' लागू भयो','ok');
 }
+
 function findPreview(id){for(const g of state.groups){const p=g.previews.find(x=>x.id===id);if(p)return {g,p}}return null}
 function activePreviewTopOffset(){
   const topBar=document.querySelector('.top');
@@ -1171,6 +1398,7 @@ function setActivePreview(id,opts={}){
   if(nav)nav.classList.add('active-preview');
   const wrap=document.getElementById('wrap_'+id);
   if(wrap)wrap.classList.add('preview-card-active');
+  updateFloatingSaveButton();
   const wantScrollNav = opts.scrollNav || (changed && opts.scrollNav!==false);
   if(wantScrollNav && !shouldPreservePreviewSide() && !isPreviewAutoScrollSuppressed()) scrollActiveNavIntoView(id,opts.navBehavior||opts.behavior||(opts.instant?'auto':'auto'));
   if(!opts.noSave)saveState();
@@ -1286,7 +1514,62 @@ function previewPickLeft(no){
   if(typeof ps.scrollY==='number'){window.scrollTo({top:ps.scrollY,behavior:'smooth'});return;}
   toast('पहिले cursor राखिएको preview card भेटिएन।','danger');
 }
-function focusEdit(id){setActivePreview(id,{scrollNav:true});const fp=findPreview(id);if(!fp)return;const live=document.getElementById('doc_'+id);if(live)fp.p.content=live.innerHTML;fp.p.editMode=true;saveState();render();setTimeout(()=>{const el=document.getElementById('doc_'+id);el?.focus();scrollToPreview(id);},60);toast('Full edit mode enable भयो। Body text चाहिँ सधैं edit गर्न मिल्छ।','ok')}
+function focusEdit(id){
+  id=id||activePreviewIdForCommand();
+  if(!id)return toast('पहिले कुनै preview card/body मा cursor राख्नुहोस्।','danger');
+  const fp=findPreview(id);if(!fp)return toast('Active preview भेटिएन।','danger');
+  const pos=capturePreviewPosition(id)||{id,groupNo:fp.g.no,scrollY:currentScrollTop()};
+  suppressPreviewAutoScroll(1200);
+  setActivePreview(id,{scrollNav:false,noSave:true});
+
+  const live=document.getElementById('doc_'+id);
+  if(live){
+    // Keep latest DOM edits first, then enable full-document editing immediately.
+    fp.p.content=normalizePreviewEditableHtml(live.innerHTML,true);
+    live.innerHTML=fp.p.content;
+    live.setAttribute('contenteditable','true');
+    live.setAttribute('data-editmode','true');
+    live.setAttribute('spellcheck','false');
+    live.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+  }
+  fp.p.editMode=true;
+  fp.p.dirty=true;
+  fp.p.saved=false;
+  fp.p.updatedAt=Date.now();
+  const wrap=document.getElementById('wrap_'+id);
+  if(wrap){
+    wrap.classList.add('preview-card-active');
+    const left=wrap.querySelector('.docbar-left');
+    if(left && !left.querySelector('.full-edit-badge')){
+      left.insertAdjacentHTML('beforeend','<span class="badge warn full-edit-badge">Full edit enabled</span>');
+    }
+    const savedText=wrap.querySelector('.saved,.unsaved');
+    if(savedText){savedText.className='unsaved';savedText.textContent='Unsaved';}
+  }
+  updateFloatingSaveButton();
+  saveState();
+  restorePreviewPosition(pos,{delay:false,scrollNav:false,keepSidebar:true,noAutoSync:true});
+  setTimeout(()=>{
+    const el=document.getElementById('doc_'+id);
+    if(el){
+      el.focus({preventScroll:true});
+      const ps=(state.previewStates||{})[fp.g.no]||{};
+      const cur=ps.cursor&&ps.cursor.previewId===id?ps.cursor:null;
+      if(cur && typeof cur.offset==='number')setSelectionOffsetWithin(el,cur.offset);
+      else {
+        const r=document.createRange();
+        r.selectNodeContents(el);
+        r.collapse(false);
+        const sel=window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(r);
+      }
+      setActivePreview(id,{scrollNav:false,noSave:true});
+      rememberPreviewCursor(id,{silent:true,preserveNav:true});
+    }
+  },40);
+  toast('Full edit mode enable भयो। अब active preview को पूरा text edit गर्न मिल्छ।','ok')
+}
 
 function printActiveDocument(id){
   const fp=findPreview(id);
@@ -1329,6 +1612,7 @@ function markUnsaved(id){
   fp.p.content=live?live.innerHTML:fp.p.content;
   fp.p.dirty=true;
   fp.p.saved=false;
+  updateFloatingSaveButton();
   saveState();
 }
 function savePreview(id){
