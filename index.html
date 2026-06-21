@@ -136,17 +136,7 @@ const DEFAULT_JUDGE='माननीय न्यायाधीश';
 const DEFAULT_SIGNATURE='न्यायाधीश';
 const LEGACY_DEFAULT_JUDGES=[DEFAULT_JUDGE,'माननीय जिल्ला न्यायाधीश','न्यायाधीश'];
 const LEGACY_DEFAULT_SIGNATURES=[DEFAULT_SIGNATURE];
-const ORDER_VARIETIES=[
-  // v2 dependent dropdown support:
-  // Folder entries use: {name:'folder-name', files:[{name:'file-name', filename:'file.txt'}, ...]}
-  // Old flat entries still work. Flat items may also use folder:'folder-name'.
-  {name:'rokka', files:[
-    {name:'rokka(fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
-    {name:'rokka(successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''}
-  ]},
-  {name:'नाबालिक भेट आदेश',filename:'nabalik_bhet_adesh.docx',keywords:'नाबालिक भेट आदेश, word, docx',content:''},
-  {name:'तायदाती फाँटवारी',filename:'tayadati.json',keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी',content:''}
-];
+
 
 function orderVarietyFiles(){
   const out=[];
@@ -603,7 +593,7 @@ function inputView(g){
   const s=g.settings||state.settings;
   return `
   <div class="panel"><div class="panel-head"><div class="panel-title">⌨️ InputTable${g.no}</div><div class="input-tools"><button class="btn x" title="Remove this table" onclick="removeTableGroup(${g.no})">×</button><button class="btn primary" onclick="generatePreview(${g.no})">⚡ Generate Preview</button><button class="btn ok" onclick="loadSampleData(${g.no})">🧪 Load Sample Data</button><button class="btn" onclick="usePreviousInput(${g.no})">↩ Use Previous</button><button class="btn danger" onclick="clearInput(${g.no})">🧹 Clear Input</button></div></div>
-  <div class="panel-body"><div class="grid"><div><label>Parse Mode</label><select id="mode"><option value="auto">Auto Detect</option><option value="html">HTML Table</option><option value="json">JSON Array</option><option value="text">Plain Text / TSV</option></select></div><div><label>अदालत / Court</label><input id="inputCourt" placeholder="Source code को h1 बाट auto-fill" value="${safe(s.court||meta.court||'')}"></div><div><label>पेशी मिति / Date</label><input id="inputDate" placeholder="२०८३-०२-२९ वा २०८३०२२९" value="${safe(normalizeDateInput(s.date||meta.date||todayNepaliLike()))}"></div><div><label>Status</label><div class="badge warn">Rows: ${g.rows.length} | Preview: ${g.previews.length} | History: ${g.history.length}</div></div></div><div id="benchSourceWrap" style="margin-top:10px">${benchSourceSelectHtml(g,blocks)}</div><br><label>Cause List Data Paste गर्नुहोस्</label><textarea id="inputText" placeholder="HTML source code, HTML table, JSON array, copied table text, वा manually typed cause list यहाँ paste गर्नुहोस्...">${safe(g.input)}</textarea><p class="hint">Tip: source code paste गर्दा <span class="kbd">pesi_date</span> बाट मिति र <span class="kbd">h1</span> बाट अदालत स्वतः भरिन्छ। Date मा <span class="kbd">yyyy-mm-dd</span> वा <span class="kbd">yyyymmdd</span> दुवै स्वीकार हुन्छ। धेरै causelist table भएमा Bench/Judge dropdown बाट चाहिएको causelist छान्नुहोस्। Settings को <span class="kbd">इजलास</span> manual/independent रहन्छ र source-code benchबाट overwrite हुँदैन।</p></div></div>`}
+  <div class="panel-body"><div class="grid"><div><label>Parse Mode</label><select id="mode"><option value="auto">Auto Detect</option><option value="html">HTML Table</option><option value="json">JSON Array</option><option value="text">Plain Text / TSV</option></select></div></div><div id="benchSourceWrap" style="margin-top:10px">${benchSourceSelectHtml(g,blocks)}</div><br><label>Cause List Data Paste गर्नुहोस्</label><textarea id="inputText" placeholder="HTML source code, HTML table, JSON array, copied table text, वा manually typed cause list यहाँ paste गर्नुहोस्...">${safe(g.input)}</textarea><p class="hint">Tip: source code paste गर्दा <span class="kbd">pesi_date</span> बाट मिति र <span class="kbd">h1</span> बाट अदालत स्वतः प्रयोग हुन्छ। धेरै causelist table भएमा Bench/Judge dropdown बाट चाहिएको causelist छान्नुहोस्। Settings को <span class="kbd">इजलास</span> manual/independent रहन्छ र source-code benchबाट overwrite हुँदैन।</p></div></div>`}
 function parsedView(g){return `<div class="panel"><div class="panel-head"><div class="panel-title">📊 Parsed Table${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button><button class="btn primary" onclick="generatePreview(${g.no})">⚡ Generate Preview</button></div></div><div class="panel-body">${tableHtml(g)}</div></div>`}
 function bindAfterRender(){
   const g=state.groups[state.activeIndex];
@@ -924,7 +914,7 @@ function focusEditActivePreview(){
 function previewView(g){
   const visible=visiblePreviews(g);
   const saveInfo=floatingSaveInfo(g,visible);
-  return `<div class="floating-action-stack" aria-label="Floating preview actions"><button class="fmtbtn" title="Bold" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('bold')"><b>B</b></button><button class="fmtbtn" title="Italic" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('italic')"><i>I</i></button><button class="fmtbtn" title="Underline" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('underline')"><u>U</u></button><button class="btn floating-edit" onmousedown="preserveToolbarSelection(event)" onclick="focusEditActivePreview()" title="Edit active preview">✏️</button><button id="floatingSaveBtn" class="btn floating-save ${saveInfo.cls}" onmousedown="preserveToolbarSelection(event)" onclick="saveActivePreview()" title="${safe(saveInfo.title)}" aria-label="${safe(saveInfo.label)} active preview. Save active preview.">💾</button><button class="btn pick" onmousedown="preserveToolbarSelection(event)" onclick="previewPickLeft(${g.no})" title="Pick from where you left">📍</button><button class="btn" onmousedown="preserveToolbarSelection(event)" onclick="previewGoTop(${g.no})" title="Go to Top">⬆️</button><button class="btn" onmousedown="preserveToolbarSelection(event)" onclick="previewGoBottom(${g.no})" title="Go to Bottom">⬇️</button></div><div class="workspace"><aside class="side"><div class="panel"><div class="panel-head"><div class="panel-title">🧭 Preview Navigation</div><span class="badge">${previewCountText(g)}</span></div><div class="panel-body"><div class="nav-list">${visible.length?visible.map(p=>navItem(g,p)).join(''):'<div class="empty">Preview खाली छ।</div>'}</div></div></div></aside><main class="maincol"><div class="panel"><div class="panel-head"><div class="panel-title">👁️ Preview${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button></div></div><div class="panel-body"><div class="doc-list">${visible.length?visible.map(p=>docItem(g,p)).join(''):'<div class="empty">Preview बनाउन InputTable मा गएर Generate Preview गर्नुहोस्।</div>'}</div></div></div></main></div>`
+  return `<div class="floating-action-stack" aria-label="Floating preview actions"><button class="fmtbtn" title="Bold" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('bold')"><b>B</b></button><button class="fmtbtn" title="Italic" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('italic')"><i>I</i></button><button class="fmtbtn" title="Underline" onmousedown="preserveToolbarSelection(event)" onclick="formatActivePreviewText('underline')"><u>U</u></button><button class="btn floating-edit" onmousedown="preserveToolbarSelection(event)" onclick="focusEditActivePreview()" title="Edit active preview">✏️</button><button id="floatingSaveBtn" class="btn floating-save ${saveInfo.cls}" onmousedown="preserveToolbarSelection(event)" onclick="saveActivePreview()" title="${safe(saveInfo.title)}" aria-label="${safe(saveInfo.label)} active preview. Save active preview.">SAVE🖫</button><button class="btn pick" onmousedown="preserveToolbarSelection(event)" onclick="previewPickLeft(${g.no})" title="Pick from where you left">📍</button><button class="btn" onmousedown="preserveToolbarSelection(event)" onclick="previewGoTop(${g.no})" title="Go to Top">⬆️</button><button class="btn" onmousedown="preserveToolbarSelection(event)" onclick="previewGoBottom(${g.no})" title="Go to Bottom">⬇️</button></div><div class="workspace"><aside class="side"><div class="panel"><div class="panel-head"><div class="panel-title">🧭 Preview Navigation</div><span class="badge">${previewCountText(g)}</span></div><div class="panel-body"><div class="nav-list">${visible.length?visible.map(p=>navItem(g,p)).join(''):'<div class="empty">Preview खाली छ।</div>'}</div></div></div></aside><main class="maincol"><div class="panel"><div class="panel-head"><div class="panel-title">👁️ Preview${g.no}</div><div class="preview-tools"><button class="btn" onclick="openTab(${state.activeIndex},'input')">← InputTable${g.no}</button></div></div><div class="panel-body"><div class="doc-list">${visible.length?visible.map(p=>docItem(g,p)).join(''):'<div class="empty">Preview बनाउन InputTable मा गएर Generate Preview गर्नुहोस्।</div>'}</div></div></div></main></div>`
 }
 function handlePreviewGroupSwitch(index){const idx=parseInt(index,10);if(isNaN(idx)||idx<0||idx>=state.groups.length)return;openTab(idx,'preview');}
 function handlePreviewDropdownAction(no,action){
@@ -961,11 +951,77 @@ function handleOrderChildChange(orderKey){
   const child=document.getElementById('topOrderChildSelect');
   if(child)child.value='';
 }
-function handleSelectOrderAction(no,orderName){
+async function handleSelectOrderAction(no,orderName){
   if(!orderName)return;
   const order=findOrderVariety(orderName);
   if(!order)return toast('Order भेटिएन।','danger');
+  const loaded=await ensureOrderVarietyContent(order);
+  if(!loaded){
+    return toast('छानिएको order को text/file content भेटिएन। ordervarieties folder/file path जाँच्नुहोस्।','danger');
+  }
+  if(state.activeType!=='preview'){
+    state.activeType='preview';
+    render();
+    setTimeout(()=>insertOrderIntoActivePreview(order),80);
+    return;
+  }
   insertOrderIntoActivePreview(order);
+}
+
+async function ensureOrderVarietyContent(order){
+  if(!order)return false;
+  if(String(order.contentHtml||'').trim() || String(order.content||'').trim())return true;
+  if(!order.filename)return false;
+  const ext=String(order.filename||'').trim().toLowerCase().split('.').pop();
+  const rootPaths=['ordervarieties/','./ordervarieties/'];
+  const folderPath=String(order.path||order.folderPath||order._orderFolderPath||order._orderFolder||'').trim().replace(/^\/+|\/+$/g,'');
+  const basePaths=[];
+  if(folderPath){rootPaths.forEach(root=>basePaths.push(root+folderPath+'/'));}
+  rootPaths.forEach(root=>basePaths.push(root));
+  for(const p of [...new Set(basePaths)]){
+    try{
+      const url=p+order.filename;
+      const res=await fetch(url,{cache:'no-cache'});
+      if(!res.ok)continue;
+      if(ext==='docx'){
+        const buffer=await res.arrayBuffer();
+        const zip=await JSZip.loadAsync(buffer);
+        const xml=await zip.file('word/document.xml').async('text');
+        const html=docxDocumentXmlToHtml(xml);
+        order.contentHtml=html||'';
+        order.content=html?'':xml.replace(/<[^>]+>/g,'').trim();
+      }else if(ext==='doc'){
+        const buffer=await res.arrayBuffer();
+        order.contentHtml=docBinaryToHtml(buffer)||'';
+        order.content='';
+      }else{
+        const text=await res.text();
+        if(ext==='json'){
+          try{
+            const parsed=JSON.parse(text);
+            let extracted='';
+            if(parsed){
+              if(typeof parsed==='string')extracted=parsed;
+              else if(typeof parsed.order==='string')extracted=parsed.order;
+              else if(typeof parsed.content==='string')extracted=parsed.content;
+              else if(typeof parsed.text==='string')extracted=parsed.text;
+              else if(typeof parsed==='object'){
+                for(const k of Object.keys(parsed)){
+                  if(typeof parsed[k]==='string'){extracted=parsed[k];break;}
+                }
+              }
+            }
+            order.content=extracted||text||'';
+          }catch(e){order.content=text||'';}
+        }else{
+          order.content=text||'';
+        }
+        order.contentHtml='';
+      }
+      return !!(String(order.contentHtml||'').trim() || String(order.content||'').trim());
+    }catch(e){/* try next path */}
+  }
+  return false;
 }
 
 function insertOrderIntoActivePreview(order){
@@ -983,11 +1039,17 @@ function insertOrderIntoActivePreview(order){
   if(!doc)return toast('Document element भेटिएन।','danger');
   const bodyElement=doc.querySelector('.body');
   if(!bodyElement)return toast('Body element भेटिएन।','danger');
-  if(order.contentHtml){
-    bodyElement.innerHTML = order.contentHtml;
-  } else {
-    bodyElement.textContent = order.content || '';
+  const htmlContent=String(order.contentHtml||'').trim();
+  const textContent=String(order.content||'').trim();
+  if(!htmlContent && !textContent){
+    return toast('छानिएको order खाली छ। अर्को order छान्नुहोस् वा file content जाँच्नुहोस्।','danger');
   }
+  if(htmlContent){
+    bodyElement.innerHTML = htmlContent;
+  } else {
+    bodyElement.textContent = textContent;
+  }
+  if(bodyElement.focus)bodyElement.focus({preventScroll:true});
   fp.p.content=doc.innerHTML;
   suppressPreviewAutoScroll(900);
   setActivePreview(id,{scrollNav:false,navBehavior:'auto',noSave:true});
@@ -1057,8 +1119,7 @@ function openPreviewActionSheet(id){
   const title=safePreviewLabel(fp.p);
   const sid=safe(id);
   const selectedPair=pairKey(fp.p.party1Role||'वादी',fp.p.party2Role||'प्रतिवादी');
-  const selectedColor=fp.p.colorStatus||'';
-  box.innerHTML=`<div class="modal-card"><div class="modal-title">⋯ ${title}</div><div class="grid-3"><div><label>Parties status pair</label><select onchange="applyPartyPair('${sid}', this.value)">${partyOptionsHtml(selectedPair)}</select></div><div><label>Navigation color/status</label><select onchange="applyColorStatus('${sid}', this.value)">${colorStatusOptions(selectedColor)}</select></div></div><p class="hint">Parties pair विरूद्ध खण्डमा लागू हुन्छ। Color/status ले preview navigation background मात्र परिवर्तन गर्छ।</p><br><div class="grid-3"><button class="btn primary" onclick="closeModal(); printActiveDocument('${sid}')">🖨️ Print</button><button class="btn info" onclick="closeModal(); showPreviewInTable('${sid}')">📊 Show in table</button><button class="btn" onclick="closeModal(); renamePreview('${sid}')">🏷️ Rename</button><button class="btn" onclick="closeModal(); downloadOne('${sid}')">📄 DOCX</button><button class="btn" onclick="closeModal(); copyPreviewContent('${sid}')">📋 Copy content</button><button class="btn danger" onclick="closeModal(); removePreview('${sid}')">🗑 Remove</button></div><div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button></div></div>`;
+  box.innerHTML=`<div class="modal-card"><div class="modal-title">⋯ ${title}</div><div class="grid-3"><div><label>Parties status pair</label><select onchange="applyPartyPair('${sid}', this.value)">${partyOptionsHtml(selectedPair)}</select></div></div><p class="hint">Parties pair विरूद्ध खण्डमा लागू हुन्छ।</p><br><div class="grid-3"><button class="btn primary" onclick="closeModal(); printActiveDocument('${sid}')">🖨️ Print</button><button class="btn info" onclick="closeModal(); showPreviewInTable('${sid}')">📊 Show in table</button><button class="btn" onclick="closeModal(); renamePreview('${sid}')">🏷️ Rename</button><button class="btn" onclick="closeModal(); downloadOne('${sid}')">DOCX <span style="font-size: 24px;">🡇</span> </button><button class="btn" onclick="closeModal(); copyPreviewContent('${sid}')">📋 Copy content</button><button class="btn danger" onclick="closeModal(); removePreview('${sid}')">🗑 Remove</button></div><div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button></div></div>`;
   box.classList.remove('hidden');
 }
 
@@ -1930,6 +1991,18 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.classList.co
 window.addEventListener('scroll',()=>{if(state.activeType==='preview')requestPreviewScrollSync(false);},{passive:true});
 loadState();
 loadOrderVarieties().then(()=>{render();}).catch(e=>{console.warn('Failed loading order varieties',e);render();});
+const ORDER_VARIETIES=[
+  // v2 dependent dropdown support:
+  // Folder entries use: {name:'folder-name', files:[{name:'file-name', filename:'file.txt'}, ...]}
+  // Old flat entries still work. Flat items may also use folder:'folder-name'.
+  {name:'rokka', files:[
+    {name:'rokka(fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
+    {name:'rokka(successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''}
+  ]},
+  {name:'नाबालिक भेट आदेश',filename:'nabalik_bhet_adesh.docx',keywords:'नाबालिक भेट आदेश, word, docx',content:''},
+  {name:'तायदाती फाँटवारी',filename:'tayadati.json',keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी',content:''}
+];
 </script>
+
 </body>
 </html>
