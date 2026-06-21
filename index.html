@@ -1991,31 +1991,60 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.classList.co
 window.addEventListener('scroll',()=>{if(state.activeType==='preview')requestPreviewScrollSync(false);},{passive:true});
 loadState();
 loadOrderVarieties().then(()=>{render();}).catch(e=>{console.warn('Failed loading order varieties',e);render();});
-const ORDER_VARIETIES=[
+const ORDER_VARIETIES = [
   // v2 dependent dropdown support:
   // Folder entries use: {name:'folder-name', files:[{name:'file-name', filename:'file.txt'}, ...]}
   // Old flat entries still work. Flat items may also use folder:'folder-name'.
-  {name:'rokka', files:[
-    {name:'rokka(fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
-    {name:'rokka(successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''},
-    {name:'rokka_nahune_thirdpersonright',filename:'ROKKA/rokka_nahune_thirdpersonright.txt',keywords:'rokka, नहुने, third person right',content:''},
-    {name:'rokka_nopesi_nohearing',filename:'ROKKA/rokka_nopesi_nohearing.txt',keywords:'rokka, nopesi, no hearing',content:''},
-    {name:'rokka_अंशभागखुलाउनलगाउने',filename:'ROKKA/rokka_अंशभागखुलाउनलगाउने.txt',keywords:'rokka, अंशभाग, खुलाउनलगाउने',content:''},
-    {name:'rokka_श्रेस्ता_झिकाउने',filename:'ROKKA/rokka_श्रेस्ता_झिकाउने.txt',keywords:'rokka, श्रेस्ता, झिकाउने',content:''}
+    // ROKKA folder
+  {name:'ROKKA', files:[
+    {name:'rokka(fresh)', filename:'ROKKA/rokka_fresh.txt', keywords:'रोक्का, थुनामा राखी पाउँ, fresh case', content:''},
+    {name:'rokka(successive)', filename:'ROKKA/rokka_successive.txt', keywords:'रोक्का, थुनामा राखी पाउँ, successive case', content:''},
+    {name:'rokka_nahune_thirdpersonright', filename:'ROKKA/rokka_nahune_thirdpersonright.txt', keywords:'rokka, नहुने, third person right', content:''},
+    {name:'rokka_nopesi_nohearing', filename:'ROKKA/rokka_nopesi_nohearing.txt', keywords:'rokka, nopesi, no hearing', content:''},
+    {name:'rokka_अंशभागखुलाउनलगाउने', filename:'ROKKA/rokka_अंशभागखुलाउनलगाउने.txt', keywords:'rokka, अंशभाग, खुलाउनलगाउने', content:''},
+    {name:'rokka_श्रेस्ता_झिकाउने', filename:'ROKKA/rokka_श्रेस्ता_झिकाउने.txt', keywords:'rokka, श्रेस्ता, झिकाउने', content:''}
   ]},
+  
+  // ROKKA_FUKUWA folder
   {name:'ROKKA_FUKUWA', files:[
-    {name:'fukuwa_details_necessary',filename:'ROKKA_FUKUWA/fukuwa_details_necessary.txt',keywords:'fukuwa, details necessary',content:''},
-    {name:'fukuwa_janakaridinu',filename:'ROKKA_FUKUWA/fukuwa_janakaridinu.txt',keywords:'fukuwa, जनकारिदिनु',content:''},
-    {name:'fukuwa_otherpartyhearing',filename:'ROKKA_FUKUWA/fukuwa_otherpartyhearing.txt',keywords:'fukuwa, other party hearing',content:''}
+    {name:'fukuwa_details_necessary', filename:'ROKKA_FUKUWA/fukuwa_details_necessary.txt', keywords:'fukuwa, details necessary', content:''},
+    {name:'fukuwa_janakaridinu', filename:'ROKKA_FUKUWA/fukuwa_janakaridinu.txt', keywords:'fukuwa, जनकारिदिनु', content:''},
+    {name:'fukuwa_otherpartyhearing', filename:'ROKKA_FUKUWA/fukuwa_otherpartyhearing.txt', keywords:'fukuwa, other party hearing', content:''}
   ]},
+  
+  // ROKKA_Share folder
   {name:'ROKKA_Share', files:[
-    {name:'rokka_sharetransfer_interloculatoryorder',filename:'ROKKA_Share/rokka_sharetransfer_interloculatoryorder.txt',keywords:'rokka share, transfer, interloculatory',content:''}
+    {name:'rokka_sharetransfer_interloculatoryorder', filename:'ROKKA_Share/rokka_sharetransfer_interloculatoryorder.txt', keywords:'rokka share, transfer, interloculatory', content:''}
   ]},
+  
+  // rokkaFUKUWA_Badar folder
   {name:'rokkaFUKUWA_Badar', files:[
-    {name:'fukuwabadar_appealenquiry',filename:'rokkaFUKUWA_Badar/fukuwabadar_appealenquiry.txt',keywords:'fukuwabadar, appeal enquiry',content:''}
+    {name:'fukuwabadar_appealenquiry', filename:'rokkaFUKUWA_Badar/fukuwabadar_appealenquiry.txt', keywords:'fukuwabadar, appeal enquiry', content:''}
   ]},
-  {name:'नाबालिक भेट आदेश',filename:'nabalik_bhet_adesh.docx',keywords:'नाबालिक भेट आदेश, word, docx',content:''},
-  {name:'तायदाती फाँटवारी',filename:'tayadati.json',keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी',content:''}
+  
+  // अंश मानाचामल १२३ दफा folder
+  {name:'amsha_manachamal_123', files:[
+    {name:'१२३ बमोजिमको म्याद १', filename:'अंश मानाचामल १२३ दफा/१२३ बमोजिमको म्याद१.txt', keywords:'अंश, मानाचामल, १२३, म्याद', content:''},
+    {name:'१२३ बमोजिमको म्याद २', filename:'अंश मानाचामल १२३ दफा/१२३ बमोजिमको म्याद२.txt', keywords:'अंश, मानाचामल, १२३, म्याद', content:''},
+    {name:'वतन खुलाउन लगाई १२३ बमोजिम म्याद', filename:'अंश मानाचामल १२३ दफा/वतन खुलाउन लगाई १२३ बमोजिम म्याद.txt', keywords:'वतन, खुलाउन, १२३, म्याद', content:''},
+    {name:'वतन_१२३म्याद_तारेख', filename:'अंश मानाचामल १२३ दफा/वतन_१२३म्याद_तारेख.txt', keywords:'वतन, १२३, म्याद, तारेख', content:''}
+  ]},
+  
+  // जालसाजी_वकपत्र folder
+  {name:'जालसाजी_वकपत्र', files:[
+    {name:'जालसाजी_वकपत्र_मेलमिलाप_मिसिल', filename:'जालसाजी_वकपत्र/जालसाजी_वकपत्र_मेलमिलाप_मिसिल.txt', keywords:'जालसाजी, वकपत्र, मेलमिलाप, मिसिल', content:''}
+  ]},
+  
+  // विगो वापत थुनामा folder
+  {name:'विगो वापत थुनामा', files:[
+    {name:'७ दिने म्याद', filename:'विगो वापत थुनामा/७ दिने म्याद.txt', keywords:'विगो, थुनामा, ७ दिने, म्याद', content:''},
+    {name:'सुरू मिसिल सहित ७ दिने म्याद', filename:'विगो वापत थुनामा/सुरू मिसिल सहित ७ दिने म्याद.txt', keywords:'विगो, थुनामा, सुरू मिसिल, ७ दिने, म्याद', content:''}
+  ]},
+  
+  // Flat files (root level)
+  {name:'नाबालिक भेट आदेश', filename:'nabalik_bhet_adesh.docx', keywords:'नाबालिक भेट आदेश, word, docx', content:''},
+  {name:'तायदाती फाँटवारी', filename:'tayadati.json', keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी', content:''},
+  {name:'index.html', filename:'index.html', keywords:'index, html', content:''}
 ];
 </script>
 
