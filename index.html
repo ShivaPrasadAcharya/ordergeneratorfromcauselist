@@ -196,7 +196,7 @@ function orderChildOptionsHtml(folderIndex){
   const tree=buildOrderVarietyTree();
   const folder=tree.folders[Number(folderIndex)];
   if(!folder)return '';
-  return `<option value="">↳ ${safe(folder.name)} भित्रको file छान्नुहोस्</option>` + folder.items.map(item=>{
+  return `<option value=""> file छान्नुहोस्</option>` + folder.items.map(item=>{
     const label=item._orderDisplayName||item.name||item.filename||'Order';
     const keywords=String(item.keywords||'').trim();
     const keywordLine=keywords ? `<option value="" disabled class="order-keyword-option">   ↳ keywords: ${safe(keywords)}</option>` : '';
@@ -1997,7 +1997,22 @@ const ORDER_VARIETIES=[
   // Old flat entries still work. Flat items may also use folder:'folder-name'.
   {name:'rokka', files:[
     {name:'rokka(fresh)',filename:'rokka_fresh.txt',keywords:'रोक्का, थुनामा राखी पाउँ, fresh case',content:''},
-    {name:'rokka(successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''}
+    {name:'rokka(successive)',filename:'rokka_successive.txt',keywords:'रोक्का, थुनामा राखी पाउँ, successive case',content:''},
+    {name:'rokka_nahune_thirdpersonright',filename:'ROKKA/rokka_nahune_thirdpersonright.txt',keywords:'rokka, नहुने, third person right',content:''},
+    {name:'rokka_nopesi_nohearing',filename:'ROKKA/rokka_nopesi_nohearing.txt',keywords:'rokka, nopesi, no hearing',content:''},
+    {name:'rokka_अंशभागखुलाउनलगाउने',filename:'ROKKA/rokka_अंशभागखुलाउनलगाउने.txt',keywords:'rokka, अंशभाग, खुलाउनलगाउने',content:''},
+    {name:'rokka_श्रेस्ता_झिकाउने',filename:'ROKKA/rokka_श्रेस्ता_झिकाउने.txt',keywords:'rokka, श्रेस्ता, झिकाउने',content:''}
+  ]},
+  {name:'ROKKA_FUKUWA', files:[
+    {name:'fukuwa_details_necessary',filename:'ROKKA_FUKUWA/fukuwa_details_necessary.txt',keywords:'fukuwa, details necessary',content:''},
+    {name:'fukuwa_janakaridinu',filename:'ROKKA_FUKUWA/fukuwa_janakaridinu.txt',keywords:'fukuwa, जनकारिदिनु',content:''},
+    {name:'fukuwa_otherpartyhearing',filename:'ROKKA_FUKUWA/fukuwa_otherpartyhearing.txt',keywords:'fukuwa, other party hearing',content:''}
+  ]},
+  {name:'ROKKA_Share', files:[
+    {name:'rokka_sharetransfer_interloculatoryorder',filename:'ROKKA_Share/rokka_sharetransfer_interloculatoryorder.txt',keywords:'rokka share, transfer, interloculatory',content:''}
+  ]},
+  {name:'rokkaFUKUWA_Badar', files:[
+    {name:'fukuwabadar_appealenquiry',filename:'rokkaFUKUWA_Badar/fukuwabadar_appealenquiry.txt',keywords:'fukuwabadar, appeal enquiry',content:''}
   ]},
   {name:'नाबालिक भेट आदेश',filename:'nabalik_bhet_adesh.docx',keywords:'नाबालिक भेट आदेश, word, docx',content:''},
   {name:'तायदाती फाँटवारी',filename:'tayadati.json',keywords:'तायादाती फाटँवारी, तायदाती, tayadati, सम्पत्ति विवरण, फाँटवारी',content:''}
