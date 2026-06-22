@@ -1995,14 +1995,18 @@ const ORDER_VARIETIES = [
   // v2 dependent dropdown support:
   // Folder entries use: {name:'folder-name', files:[{name:'file-name', filename:'file.txt'}, ...]}
   // Old flat entries still work. Flat items may also use folder:'folder-name'.
-    // ROKKA folder
+  
+  // ROKKA folder (UPDATED with new files)
   {name:'ROKKA', files:[
     {name:'rokka(fresh)', filename:'ROKKA/rokka_fresh.txt', keywords:'रोक्का, थुनामा राखी पाउँ, fresh case', content:''},
     {name:'rokka(successive)', filename:'ROKKA/rokka_successive.txt', keywords:'रोक्का, थुनामा राखी पाउँ, successive case', content:''},
     {name:'rokka_nahune_thirdpersonright', filename:'ROKKA/rokka_nahune_thirdpersonright.txt', keywords:'rokka, नहुने, third person right', content:''},
     {name:'rokka_nopesi_nohearing', filename:'ROKKA/rokka_nopesi_nohearing.txt', keywords:'rokka, nopesi, no hearing', content:''},
     {name:'rokka_अंशभागखुलाउनलगाउने', filename:'ROKKA/rokka_अंशभागखुलाउनलगाउने.txt', keywords:'rokka, अंशभाग, खुलाउनलगाउने', content:''},
-    {name:'rokka_श्रेस्ता_झिकाउने', filename:'ROKKA/rokka_श्रेस्ता_झिकाउने.txt', keywords:'rokka, श्रेस्ता, झिकाउने', content:''}
+    {name:'rokka_श्रेस्ता_झिकाउने', filename:'ROKKA/rokka_श्रेस्ता_झिकाउने.txt', keywords:'rokka, श्रेस्ता, झिकाउने', content:''},
+    {name:'प्रतिउत्तरपरेकोहुँदाअर्कोपक्षलाईजानकारीदिनु', filename:'ROKKA/प्रतिउत्तरपरेकोहुँदाअर्कोपक्षलाईजानकारीदिनु.txt', keywords:'प्रतिउत्तर, अर्को पक्ष, जानकारी, रोक्का', content:''},
+    {name:'रोक्का_हुने_civil_प्रथमरोक्का', filename:'ROKKA/रोक्का_हुने_civil_प्रथमरोक्का.txt', keywords:'रोक्का, हुने, civil, प्रथमरोक्का', content:''},
+    {name:'रोक्का_हुने_criminal_पुनरोक्का', filename:'ROKKA/रोक्का_हुने_criminal_पुनरोक्का.txt', keywords:'रोक्का, हुने, criminal, पुनरोक्का', content:''}
   ]},
   
   // ROKKA_FUKUWA folder
@@ -2010,6 +2014,7 @@ const ORDER_VARIETIES = [
     {name:'fukuwa_details_necessary', filename:'ROKKA_FUKUWA/fukuwa_details_necessary.txt', keywords:'fukuwa, details necessary', content:''},
     {name:'fukuwa_janakaridinu', filename:'ROKKA_FUKUWA/fukuwa_janakaridinu.txt', keywords:'fukuwa, जनकारिदिनु', content:''},
     {name:'fukuwa_otherpartyhearing', filename:'ROKKA_FUKUWA/fukuwa_otherpartyhearing.txt', keywords:'fukuwa, other party hearing', content:''}
+    {name:'फुकुवा हुने', filename:'ROKKA_FUKUWA/फुकुवाहुने.txt', keywords:'फुकुवा हुने', content:''}
   ]},
   
   // ROKKA_Share folder
@@ -2023,11 +2028,32 @@ const ORDER_VARIETIES = [
   ]},
   
   // अंश मानाचामल १२३ दफा folder
-  {name:'amsha_manachamal_123', files:[
+  {name:'अंश मानाचामल १२३ दफा', files:[
     {name:'१२३ बमोजिमको म्याद १', filename:'अंश मानाचामल १२३ दफा/१२३ बमोजिमको म्याद१.txt', keywords:'अंश, मानाचामल, १२३, म्याद', content:''},
     {name:'१२३ बमोजिमको म्याद २', filename:'अंश मानाचामल १२३ दफा/१२३ बमोजिमको म्याद२.txt', keywords:'अंश, मानाचामल, १२३, म्याद', content:''},
     {name:'वतन खुलाउन लगाई १२३ बमोजिम म्याद', filename:'अंश मानाचामल १२३ दफा/वतन खुलाउन लगाई १२३ बमोजिम म्याद.txt', keywords:'वतन, खुलाउन, १२३, म्याद', content:''},
     {name:'वतन_१२३म्याद_तारेख', filename:'अंश मानाचामल १२३ दफा/वतन_१२३म्याद_तारेख.txt', keywords:'वतन, १२३, म्याद, तारेख', content:''}
+  ]},
+  
+  // amsha_manachamal_123 folder (NEW)
+  {name:'amsha_manachamal_123', files:[
+    // Empty folder - add files here if any exist
+  ]},
+  
+  // civil_अदालतीशुल्ककोसुविधा folder (NEW)
+  {name:'civil_अदालतीशुल्ककोसुविधा', files:[
+    {name:'सुविधाप्रदान', filename:'civil_अदालतीशुल्ककोसुविधा/सुविधाप्रदान.txt', keywords:'अदालती शुल्क, सुविधा, civil', content:''}
+  ]},
+  
+  // criminal_तालिकाप्रमाणपेलापरेको folder (NEW)
+  {name:'criminal_तालिकाप्रमाणपेलापरेको', files:[
+    {name:'ज्यामाउ_भिडियो_पेन_ड्राइभ', filename:'criminal_तालिकाप्रमाणपेलापरेको/ज्यामाउ_भिडियो_पेन_ड्राइभ.txt', keywords:'ज्यामाउ, भिडियो, पेन ड्राइभ, criminal', content:''}
+  ]},
+  
+  // criminal_वकपत्र folder (NEW)
+  {name:'criminal_वकपत्र', files:[
+    {name:'वकपत्रकोलागिनुमौकाप्रदान_दफा१०१', filename:'criminal_वकपत्र/वकपत्रकोलागिनुमौकाप्रदान_दफा१०१.txt', keywords:'वकपत्र, नुमौका, दफा १०१, criminal', content:''},
+    {name:'वकपत्रगराउनु', filename:'criminal_वकपत्र/वकपत्रगराउनु.txt', keywords:'वकपत्र, गराउनु, criminal', content:''}
   ]},
   
   // जालसाजी_वकपत्र folder
