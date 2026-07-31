@@ -1,4 +1,4 @@
-Automatic Court Order Generator v8 — Fixed Package
+ Automatic Court Order Generator v8 — Fixed Package
 
 1. Extract the ZIP file completely.
 2. Keep all five files in the same folder.
